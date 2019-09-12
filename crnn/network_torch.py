@@ -7,10 +7,10 @@ class BidirectionalLSTM(nn.Module):
         self.embedding = nn.Linear(nHidden * 2, nOut)
 
     def forward(self, input):
-        recurrent, _ = self.rnn(input)
+        recurrent, _ = self.rnn(input)         #input  198,1,512,  recurrent 198,1,512,
         T, b, h = recurrent.size()
         t_rec = recurrent.view(T * b, h)
-        output = self.embedding(t_rec)  # [T * b, nOut]
+        output = self.embedding(t_rec)  # [T * b, nOut]   #经过一个fn变化.
         output = output.view(T, b, -1)
         return output
     
@@ -71,12 +71,12 @@ class CRNN(nn.Module):
 
     def forward(self, input):
         # conv features
-        conv = self.cnn(input)
+        conv = self.cnn(input)   #input:1,1,32,788 channel是1了
         b, c, h, w = conv.size()
         
         assert h == 1, "the height of conv must be 1"
         conv = conv.squeeze(2)
-        conv = conv.permute(2, 0, 1)  # [w, b, c]
+        conv = conv.permute(2, 0, 1)  # [w, b, c]  198,1,512      w,c是因为通过了conv进行的变化
         if self.lstmFlag:
            # rnn features
            output = self.rnn(conv)

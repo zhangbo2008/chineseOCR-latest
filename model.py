@@ -79,7 +79,7 @@ def crnnRec(im,boxes,leftAdjust=False,rightAdjust=False,alph=0.2,f=1.0):
        text = crnnOcr(partImg.convert('L'))
        if text.strip()!=u'':
             results.append({'cx':cx*f,'cy':cy*f,'text':text,'w':newW*f,'h':newH*f,'degree':degree*180.0/np.pi})
- 
+ #degree表示顺时针转多少度.
    return results
 
 
@@ -121,7 +121,7 @@ def model(img,detectAngle=False,config={},leftAdjust=False,rightAdjust=False,alp
     
     config['img'] = img
     text_recs = text_detect(**config)##文字检测
-    newBox = sort_box(text_recs)##行文本识别
+    newBox = sort_box(text_recs)  #按照列高排序,符合我们阅读顺序!     ##下行行文本识别
     result = crnnRec(np.array(img),newBox,leftAdjust,rightAdjust,alph,1.0/f)
     return img,result,angle
 

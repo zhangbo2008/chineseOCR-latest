@@ -328,7 +328,7 @@ def box_rotate(box,angle=0,imgH=0,imgW=0):
 
 
 def solve(box):
-     """
+     """#把斜的文字seq,旋转直了.
      绕 cx,cy点 w,h 旋转 angle 的坐标
      x = cx-w/2
      y = cy-h/2

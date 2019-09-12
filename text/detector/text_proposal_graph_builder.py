@@ -4,16 +4,16 @@ class Graph:
         self.graph=graph
 
     def sub_graphs_connected(self):
-        sub_graphs=[]
+        sub_graphs=[]  #利用临街矩阵拼接.
         for index in range(self.graph.shape[0]):
-            if not self.graph[:, index].any() and self.graph[index, :].any():
+            if not self.graph[:, index].any() and self.graph[index, :].any():#如果index的前节点没有,后节点有就进入
                 v=index
                 sub_graphs.append([v])
                 while self.graph[v, :].any():
-                    v=np.where(self.graph[v, :])[0][0]
+                    v=np.where(self.graph[v, :])[0][0]   #得到后续节点的index
                     sub_graphs[-1].append(v)
-        return sub_graphs
-    
+        return sub_graphs#得到最后的一组值!!!!!表示seq
+
 
 class TextProposalGraphBuilder:
     """
@@ -44,7 +44,7 @@ class TextProposalGraphBuilder:
             return results
 
     def get_precursors(self, index):
-        box=self.text_proposals[index]
+        box=self.text_proposals[index]#查询2这个节点的前面节点是几?
         results=[]
         for left in range(int(box[0])-1, max(int(box[0]-self.MAX_HORIZONTAL_GAP), 0)-1, -1):
             adj_box_indices=self.boxes_table[left]
@@ -57,7 +57,7 @@ class TextProposalGraphBuilder:
 
     def is_succession_node(self, index, succession_index):
         precursors=self.get_precursors(succession_index)
-        #如果积分比前面的差就不要了.
+        #如果积分比前面的差就不要了.#确实需要这么判断,比如2个字符a,b  b是a的最优后续节点,但是a不是b的最优 #前置节点,而c是b的最优前置节点.那么就不能让ab拼接成一个单词.
         if self.scores[index]>=np.max(self.scores[precursors]):
             return True
         return False
@@ -96,12 +96,12 @@ class TextProposalGraphBuilder:
         '''
         for index, box in enumerate(text_proposals):
             #下面一行是关键.
-            successions=self.get_successions(index)
+            successions=self.get_successions(index) #比如这里0的后续是2
             if len(successions)==0:
                 continue
-            succession_index=successions[np.argmax(scores[successions])]
-            if self.is_succession_node(index, succession_index):
+            succession_index=successions[np.argmax(scores[successions])]#如果有多个后续的时候,用argmax提取出一个最好的!
+            if self.is_succession_node(index, succession_index):#再一次进行判断.
                 # NOTE: a box can have multiple successions(precursors) if multiple successions(precursors)
                 # have equal scores.
-                graph[index, succession_index]=True
+                graph[index, succession_index]=True #如果成立邻接矩阵就置1.
         return Graph(graph)

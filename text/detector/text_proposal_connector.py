@@ -20,7 +20,7 @@ class TextProposalConnector:
         p=np.poly1d(np.polyfit(X, Y, 1))
         return p(x1), p(x2)
 
-    def get_text_lines(self, text_proposals, scores, im_size):
+    def get_text_lines(self, text_proposals, scores, im_size):#画出新的box
         """
         text_proposals:boxes
         
@@ -28,24 +28,24 @@ class TextProposalConnector:
         # tp=text proposal
         #下面一行很核心!!!!!!!!!!!!   im_size: 原始大图片的长和宽
         tp_groups=self.group_text_proposals(text_proposals, scores, im_size)##find the text line 
-        
+        #下面对结果拼接seq,seq长度设置8
         text_lines=np.zeros((len(tp_groups), 8), np.float32)
 
         for index, tp_indices in enumerate(tp_groups):
             text_line_boxes=text_proposals[list(tp_indices)]
             #num = np.size(text_line_boxes)##find 
-            X = (text_line_boxes[:,0] + text_line_boxes[:,2]) / 2
-            Y = (text_line_boxes[:,1] + text_line_boxes[:,3]) / 2
+            X = (text_line_boxes[:,0] + text_line_boxes[:,2]) / 2 #每一个汉子的行中心点
+            Y = (text_line_boxes[:,1] + text_line_boxes[:,3]) / 2 #每一个汉子的列中心点
             
-            z1 = np.polyfit(X,Y,1)
+            z1 = np.polyfit(X,Y,1)        #拟合成一个新的直线.
            # p1 = np.poly1d(z1)
 
 
             x0=np.min(text_line_boxes[:, 0])
             x1=np.max(text_line_boxes[:, 2])
 
-            offset=(text_line_boxes[0, 2]-text_line_boxes[0, 0])*0.5
-
+            offset=(text_line_boxes[0, 2]-text_line_boxes[0, 0])*0.5  #第一个汉子的宽*0.5
+            #下面一行拟合的直线是得到的seq 上横线的刻画 ,下面第二行是上横线用末端点的另一个刻画.#他俩差别不大.
             lt_y, rt_y=self.fit_y(text_line_boxes[:, 0], text_line_boxes[:, 1], x0+offset, x1-offset)
             lb_y, rb_y=self.fit_y(text_line_boxes[:, 0], text_line_boxes[:, 3], x0+offset, x1-offset)
 
@@ -54,14 +54,14 @@ class TextProposalConnector:
             score=scores[list(tp_indices)].sum()/float(len(tp_indices))
 
             text_lines[index, 0]=x0
-            text_lines[index, 1]=min(lt_y, rt_y)
+            text_lines[index, 1]=min(lt_y, rt_y) #为了鲁棒性,取2个直线的最大暴裸
             text_lines[index, 2]=x1
             text_lines[index, 3]=max(lb_y, rb_y)
             text_lines[index, 4]=score
-            text_lines[index, 5]=z1[0]
+            text_lines[index, 5]=z1[0]#记录直线的斜率和bias
             text_lines[index, 6]=z1[1]
-            height = np.mean( (text_line_boxes[:,3]-text_line_boxes[:,1]) )
-            text_lines[index, 7]= height + 2.5
+            height = np.mean( (text_line_boxes[:,3]-text_line_boxes[:,1]) )#平均字高
+            text_lines[index, 7]= height + 2.5#还是为了鲁棒性.
         #text_lines=clip_boxes(text_lines, im_size)
 
 

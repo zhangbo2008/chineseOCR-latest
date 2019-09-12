@@ -14,7 +14,7 @@ import torch
 from apphelper.image import xy_rotate_box,box_rotate,solve
 import model
 
-
+###########################注意目前只支持4个方向,我要做成8个方向的,只是图片预处理时候多算几个方向即可.4个感觉不够.
 # In[2]:
 
 
