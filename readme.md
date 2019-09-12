@@ -6,5 +6,9 @@ https://v2.fangcloud.com/share/f9fe056b9d78b3b98a548ec68d
 pytorch:1.1.0版本!!!!!!!!!
 
 
+manage.py
+用flask来开启服务,就这一个文件够了.
+
+
 
 
