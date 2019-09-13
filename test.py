@@ -1,20 +1,19 @@
 #把引入模块都放入静态区域!!!!!!!!!!!!!
 #他们在的区域是堆中,因为服务一直没停,所以一直占用内存.正好是我们需要的效果!!!!!!!!!!!!!!!!!!!!
 #发现会重复引入下面的库包,加一个引用计数.也不行,用locals加flag也不行!!!
-if 'flag'  not in   locals():
-    flag=1
 
-    import os
 
-    GPUID = '0'  ##调用GPU序号
-    os.environ["CUDA_VISIBLE_DEVICES"] = GPUID
-    import torch
-    from apphelper.image import xy_rotate_box, box_rotate, solve
-    import model
+import os
 
-    ###########################注意目前只支持4个方向,我要做成8个方向的,只是图片预处理时候多算几个方向即可.4个感觉不够.
-    import cv2
-    import numpy as np
+GPUID = '0'  ##调用GPU序号
+os.environ["CUDA_VISIBLE_DEVICES"] = GPUID
+import torch
+from apphelper.image import xy_rotate_box, box_rotate, solve
+import model
+
+###########################注意目前只支持4个方向,我要做成8个方向的,只是图片预处理时候多算几个方向即可.4个感觉不够.
+import cv2
+import numpy as np
 
 
 
