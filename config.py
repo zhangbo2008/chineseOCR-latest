@@ -2,6 +2,9 @@ import os
 ########################文字检测########################
 ##文字检测引擎 
 pwd = os.getcwd()
+# print(pwd)
+pwd =  os.path.dirname(os.path.abspath( __file__ ))#从这2个打印看出来,永远不要用getcwd,很垃圾!要用本行方法来读路径
+print(pwd)
 opencvFlag = 'keras' ##keras,opencv,darknet，模型性能 keras>darknet>opencv
 IMGSIZE = (608,608)## yolo3 输入图像尺寸
 ## keras 版本anchors#从这里看出来,文字都是细长型,高度都是8像素

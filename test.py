@@ -1,32 +1,51 @@
 #把引入模块都放入静态区域!!!!!!!!!!!!!
 #他们在的区域是堆中,因为服务一直没停,所以一直占用内存.正好是我们需要的效果!!!!!!!!!!!!!!!!!!!!
+#发现会重复引入下面的库包,加一个引用计数.也不行,用locals加flag也不行!!!
+if 'flag'  not in   locals():
+    flag=1
+
+    import os
+
+    GPUID = '0'  ##调用GPU序号
+    os.environ["CUDA_VISIBLE_DEVICES"] = GPUID
+    import torch
+    from apphelper.image import xy_rotate_box, box_rotate, solve
+    import model
+
+    ###########################注意目前只支持4个方向,我要做成8个方向的,只是图片预处理时候多算几个方向即可.4个感觉不够.
+    import cv2
+    import numpy as np
 
 
-import os
-
-GPUID = '0'  ##调用GPU序号
-os.environ["CUDA_VISIBLE_DEVICES"] = GPUID
-import torch
-from apphelper.image import xy_rotate_box, box_rotate, solve
-import model
-
-###########################注意目前只支持4个方向,我要做成8个方向的,只是图片预处理时候多算几个方向即可.4个感觉不够.
-# In[2]:
-
-
-import cv2
-import numpy as np
 
 
 
-def main(picName=''):
-    #!/usr/bin/env python
-    # coding: utf-8
 
-    # ## 加载模型
-    #
-    # keyipaole
-    # In[1]:
+
+
+
+#下面是函数主体.
+
+
+def main(url):
+    '''
+    先打开url  1种是下载,1种是直接打开.
+
+    :param url:
+    :return:
+    '''
+    tmp2=url
+    import requests
+    r = requests.get(tmp2)
+    with open('tmp.jpg', 'wb') as f:
+        f.write(r.content)
+    print('图片下载完成')
+
+    picName=url.split('/')[-1].split('.')[-2]
+
+
+
+
 
 
 
@@ -80,7 +99,7 @@ def main(picName=''):
     import time
     from PIL import Image
     import os,sys
-    p = os.path.dirname(os.path.abspath( __file__ ))+'/test/'+picName
+    p = os.path.dirname(os.path.abspath( __file__ ))+'/tmp.jpg'
     img = cv2.imread(p)
 
     h,w = img.shape[:2]
@@ -107,7 +126,11 @@ def main(picName=''):
     for line in result:
         print(line['text'])
     plot_boxes(img,angle, result,color=(0,0,0))
-    return result
+    out={}
+
+    out['picName']=picName
+    out['parser']=result
+    return out
 
 
     # In[ ]:

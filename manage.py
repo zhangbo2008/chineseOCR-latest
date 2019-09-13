@@ -1,19 +1,15 @@
-from flask import Flask
-#flask更简单一个文件即可!
-app = Flask(__name__)
-from test import main
-import json
-import requests
-from flask import Flask,request
-import test #引入模块进行内存预加载
-@app.route('/',methods=['GET','POST'])
-
-def main1():
-
-    return json.dumps(main(request.form['pic']))
-
-
-
+#!/usr/bin/env python
+import os
+import sys
+#注意启动的时候是 python manager 0:8090
 if __name__ == '__main__':
-
-    app.run(debug=True, threaded=True, host='0.0.0.0', port=5080)
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'nlp_service.settings')
+    try:
+        from django.core.management import execute_from_command_line
+    except ImportError as exc:
+        raise ImportError(
+            "Couldn't import Django. Are you sure it's installed and "
+            "available on your PYTHONPATH environment variable? Did you "
+            "forget to activate a virtual environment?"
+        ) from exc
+    execute_from_command_line(sys.argv)

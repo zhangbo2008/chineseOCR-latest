@@ -22,7 +22,7 @@ def crnnSource():
         model = CRNN(32, 1, len(alphabet)+1, 256, 1,lstmFlag=LSTMFLAG).cuda()##LSTMFLAG=True crnn 否则 dense ocr
     else:
         model = CRNN(32, 1, len(alphabet)+1, 256, 1,lstmFlag=LSTMFLAG).cpu()
-    
+
     trainWeights = torch.load(ocrModel,map_location=lambda storage, loc: storage)
     modelWeights = OrderedDict()
     for k, v in trainWeights.items():
