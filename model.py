@@ -41,7 +41,17 @@ def text_detect(img,
                 ):
     boxes, scores = detect.text_detect(np.array(img))
     boxes = np.array(boxes,dtype=np.float32)
-    scores = np.array(scores,dtype=np.float32)
+    scores = np.array(scores,dtype=np.float32)#下面要做的就是该下行代码支持竖直方向书写.
+    '''
+    已经想到了最好的解决方法:
+    
+    因为已经得到了所有的字的box.
+    那么所有的汉子都顺时针旋转90度,
+    然后再图片整体逆时针旋转90度,就可以把整个图片变成横向书写的图片了.
+    在套用原来的检测算法,得到的结果跟把图片看做横向书写来比较就可以,双向识别书写了!!!!!!
+    '''
+
+
     textdetector  = TextDetector(MAX_HORIZONTAL_GAP,MIN_V_OVERLAPS,MIN_SIZE_SIM)#crnn识别汉子,这里面是算法核心,最难的地方.跟yolo一起就是全部了.
     shape = img.shape[:2]
     boxes = textdetector.detect(boxes,
