@@ -297,7 +297,13 @@ def get_box_spilt(boxes,im,sizeW,SizeH,splitW=8,isRoate=False,rorateDegree=0):
     newBoxes = [box+[1] for box in newBoxes]
     return newBoxes,newIm
 
-
+def rotate_boxshunshi90(box):
+    h=box[3]-box[1]
+    w=box[2]-box[0]
+    center=(box[0]+box[2])/2,(box[1]+box[3])/2
+    zuoshang=center[0]-h/2,center[1]-w/2
+    youxia=center[0]+h/2,center[1]+w/2
+    return zuoshang,youxia
 
 def box_rotate(box,angle=0,imgH=0,imgW=0):
     """
