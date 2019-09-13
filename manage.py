@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import os
 import sys
-#注意启动的时候是 python manager 0:8090 如果不加0的话就没法外网访问.
+#注意启动的时候是 python manager 0:8090 如果不加0的话就没法外网访问.1
 if __name__ == '__main__':
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'nlp_service.settings')
     try:
