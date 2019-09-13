@@ -102,7 +102,7 @@ def eval_angle(im,detectAngle=False):
         elif angle==270:
             im = Image.fromarray(im).transpose(Image.ROTATE_270)
         img = np.array(im)
-        
+        #这里面表示单个文字的偏斜角度,文字的书写方向还是只有水平向右书写.
     return  angle,img
 
 

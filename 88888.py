@@ -1,0 +1,1 @@
+from text.detector.utils.gpu_nms import gpu_nms

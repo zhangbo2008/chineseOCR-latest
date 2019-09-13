@@ -63,7 +63,7 @@ def angle_detect_dnn(img,adjust=True):
     h,w = img.shape[:2]
     ROTATE = [0,90,180,270]
     if adjust:
-       thesh = 0.01
+       thesh = 0.05
        xmin,ymin,xmax,ymax = int(thesh*w),int(thesh*h),w-int(thesh*w),h-int(thesh*h)
        img = img[ymin:ymax,xmin:xmax]##剪切图片边缘
     
@@ -86,7 +86,7 @@ def angle_detect_tf(img,adjust=True):
     h,w = img.shape[:2]
     ROTATE = [0,90,180,270]
     if adjust:
-       thesh = 0.01 #删除边界0.05的没用信息,这个可以根据具体数据调节.
+       thesh = 0.05 #删除边界0.05的没用信息,这个可以根据具体数据调节.
        xmin,ymin,xmax,ymax = int(thesh*w),int(thesh*h),w-int(thesh*w),h-int(thesh*h)
        img = img[ymin:ymax,xmin:xmax]##剪切图片边缘
     img = cv2.resize(img,(224,224))

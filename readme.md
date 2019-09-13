@@ -55,4 +55,6 @@ https://www.imooc.com/wenda/detail/468056
 
 手写识别也垃圾.
 
-
+解决nms显卡调用问题:
+pushd text/detector/utils && sh make.sh && popd
+运行完就可以使用c语言nms了.

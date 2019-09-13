@@ -245,7 +245,7 @@ def letterbox_image(image, size,fillValue=[128,128,128]):
     
     resized_image = image.resize((new_w,new_h), Image.BICUBIC)
     if fillValue is None:
-       fillValue = [int(x.mean()) for x in cv2.split(np.array(im))]
+       fillValue = [int(x.mean()) for x in cv2.split(np.array(image))]
     boxed_image = Image.new('RGB', size, tuple(fillValue))
     
     boxed_image.paste(resized_image,)
@@ -410,7 +410,7 @@ def letterbox_image(image, size,fillValue=[128,128,128]):
     
     resized_image = image.resize((new_w,new_h), Image.BICUBIC)
     if fillValue is None:
-       fillValue = [int(x.mean()) for x in cv2.split(np.array(im))]
+       fillValue = [int(x.mean()) for x in cv2.split(np.array(image))]
     boxed_image = Image.new('RGB', size, tuple(fillValue))
     boxed_image.paste(resized_image, (0,0))
     return boxed_image,new_w/image_w
