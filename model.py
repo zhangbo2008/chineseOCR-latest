@@ -112,7 +112,7 @@ def text_detect2(img,
         newbox=image.rotate_boxshunshi90(i)
         newboxes.append(newbox)
     tmpOld=tmpOld.transpose(Image.ROTATE_90)
-    boxes=[[i[1], img[1]-i[2],i[3],img[0]-i[0]] for i in boxes]
+    boxes=[[i[1], img.shape[1]-i[2]+1,i[3],img.shape[0]-i[0]+1] for i in boxes]#这个地方是不是差1?
 
 
 
@@ -207,7 +207,7 @@ def model(img,detectAngle=False,config={},leftAdjust=False,rightAdjust=False,alp
     @@param:ifadjustDegree 调整文字识别倾斜角度
     @@param:detectAngle,是否检测文字朝向
     """
-    angle,img = eval_angle(img,detectAngle=detectAngle)##文字方向检测
+    angle,img = eval_angle(img,detectAngle=detectAngle)##文字方向检测# 注意cv读取就是行列反过来.
     if opencvFlag!='keras':
        img,f =letterbox_image(Image.fromarray(img), IMGSIZE)## pad
        img = np.array(img)
