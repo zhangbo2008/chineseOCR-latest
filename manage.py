@@ -5,6 +5,7 @@ from test import main
 import json
 import requests
 from flask import Flask,request
+import test #引入模块进行内存预加载
 @app.route('/',methods=['GET','POST'])
 
 def main1():

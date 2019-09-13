@@ -1,3 +1,24 @@
+#把引入模块都放入静态区域!!!!!!!!!!!!!
+#他们在的区域是堆中,因为服务一直没停,所以一直占用内存.正好是我们需要的效果!!!!!!!!!!!!!!!!!!!!
+
+
+import os
+
+GPUID = '0'  ##调用GPU序号
+os.environ["CUDA_VISIBLE_DEVICES"] = GPUID
+import torch
+from apphelper.image import xy_rotate_box, box_rotate, solve
+import model
+
+###########################注意目前只支持4个方向,我要做成8个方向的,只是图片预处理时候多算几个方向即可.4个感觉不够.
+# In[2]:
+
+
+import cv2
+import numpy as np
+
+
+
 def main(picName=''):
     #!/usr/bin/env python
     # coding: utf-8
@@ -8,19 +29,7 @@ def main(picName=''):
     # In[1]:
 
 
-    import os
-    GPUID='0'##调用GPU序号
-    os.environ["CUDA_VISIBLE_DEVICES"] = GPUID
-    import torch
-    from apphelper.image import xy_rotate_box,box_rotate,solve
-    import model
 
-    ###########################注意目前只支持4个方向,我要做成8个方向的,只是图片预处理时候多算几个方向即可.4个感觉不够.
-    # In[2]:
-
-
-    import cv2
-    import numpy as np
     def plot_box(img,boxes):
         blue = (0, 0, 0) #18
         tmp = np.copy(img)
