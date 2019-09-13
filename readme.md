@@ -58,3 +58,21 @@ https://www.imooc.com/wenda/detail/468056
 解决nms显卡调用问题:
 pushd text/detector/utils && sh make.sh && popd
 运行完就可以使用c语言nms了.
+
+
+
+
+2019-09-13,23点49
+总结:
+写numpy时候一定要指定float32类型.防止bug
+
+
+debug时候利用evaluate:
+Image.fromarray(img).save('99999999.png') 随时看图片的过程!!!!!!! 相当霸道的方法.
+
+
+
+
+
+
+

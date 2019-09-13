@@ -72,7 +72,11 @@ def text_detect(img,
            x3,y3 = (box[6],box[7])
            x4,y4 = (box[4],box[5])
            newBox.append([x1*rx,y1*ry,x2*rx,y2*ry,x3*rx,y3*ry,x4*rx,y4*ry])
-    return newBox,boxes[:,4] #把分数也返回做比较用.
+    if len(boxes)>0:
+        return newBox, boxes[:, 4]  # 把分数也返回做比较用.
+    else:
+
+         return newBox,np.array([]) #把分数也返回做比较用.
 
 
 def text_detect2(img,
@@ -82,7 +86,7 @@ def text_detect2(img,
                 TEXT_PROPOSALS_MIN_SCORE=0.7,
                 TEXT_PROPOSALS_NMS_THRESH=0.3,
                 TEXT_LINE_NMS_THRESH=0.3,
-                ):
+                ):#cv2.imwrite(img,"test.png")
     boxes, scores = detect.text_detect(np.array(img))
     boxes = np.array(boxes, dtype=np.float32)
     scores = np.array(scores, dtype=np.float32)  # 下面要做的就是该下行代码支持竖直方向书写.
@@ -110,9 +114,15 @@ def text_detect2(img,
         newLeftUppoint=[int(i)for i in newLeftUppoint]
         tmpOld.paste(dat, newLeftUppoint)
         newbox=image.rotate_boxshunshi90(i)
-        newboxes.append(newbox)
+        tmp1=[]
+        tmp1.append(newbox[0][0])
+        tmp1.append(newbox[0][1])
+        tmp1.append(newbox[1][1])
+        tmp1.append(newbox[1][0])
+        newboxes.append(tmp1)
     tmpOld=tmpOld.transpose(Image.ROTATE_90)
-    boxes=[[i[1], img.shape[1]-i[2]+1,i[3],img.shape[0]-i[0]+1] for i in boxes]#这个地方是不是差1?
+    boxes=[[i[1], img.shape[1]-i[2]+1,i[3],img.shape[0]-i[0]+1] for i in newboxes]#这个地方是不是差1?
+    boxes=np.array(boxes).astype(np.float32) #一定要float32.
 
 
 
@@ -131,7 +141,8 @@ def text_detect2(img,
 
 
     '''
-    已经想到了最好的解决方法:
+    已经想到了最好的解决方法:!!!!!!!!!不对,因为box不是最后的文字,所以box都旋转会让最后的文字都转废了!!!!!!!!!!!!!!!!!!!!!!!!!1;
+    2019-09-14,1点13
 
     因为已经得到了所有的字的box.
     那么所有的汉子都顺时针旋转90度,
@@ -141,7 +152,7 @@ def text_detect2(img,
 
     textdetector = TextDetector(MAX_HORIZONTAL_GAP, MIN_V_OVERLAPS,
                                 MIN_SIZE_SIM)  # crnn识别汉子,这里面是算法核心,最难的地方.跟yolo一起就是全部了.
-    shape = img.shape[:2]
+    shape = img.shape[:2][::-1] #衡中交替.
     boxes = textdetector.detect(boxes,
                                 scores[:, np.newaxis],
                                 shape,
@@ -160,7 +171,10 @@ def text_detect2(img,
         x3, y3 = (box[6], box[7])
         x4, y4 = (box[4], box[5])
         newBox.append([x1 * rx, y1 * ry, x2 * rx, y2 * ry, x3 * rx, y3 * ry, x4 * rx, y4 * ry])
-    return newBox,boxes[:,4]
+    if len(boxes)>0:
+             return newBox,boxes[:,4],tmpOld
+    else:
+        return newBox,np.array([]),tmpOld
 def crnnRec(im,boxes,leftAdjust=False,rightAdjust=False,alph=0.2,f=1.0):
    """
    crnn模型，ocr识别
@@ -221,40 +235,22 @@ def model(img,detectAngle=False,config={},leftAdjust=False,rightAdjust=False,alp
 
 
 
-    #第二种竖向书写:
-    text_recs2,scoreAll2 = text_detect2(**config)  ##文字检测
+    #第二种竖向书写:   2019-09-14,1点14 发现这么写是错的/11111111111111
+    # text_recs2,scoreAll2,newpic = text_detect2(**config)  ##文字检测
 
+    '''
+    无奈,还是找不到处理竖着写文字的方法,只能以后再说,现在先代码回滚/
+    '''
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    if scoreAll1<scoreAll2:
+    if 1!=1:
+        print("文字是竖着的概率高!!!!!!")
         text_recs=text_recs2
+        newBox = sort_box(text_recs)  # 按照列高排序,符合我们阅读顺序!     ##下行行文本识别
+        result = crnnRec(np.array(newpic), newBox, leftAdjust, rightAdjust, alph, 1.0 / f)
 
-
-
-    newBox = sort_box(text_recs)  #按照列高排序,符合我们阅读顺序!     ##下行行文本识别
-    result = crnnRec(np.array(img),newBox,leftAdjust,rightAdjust,alph,1.0/f)
+    else:
+        newBox = sort_box(text_recs)  #按照列高排序,符合我们阅读顺序!     ##下行行文本识别
+        result = crnnRec(np.array(img),newBox,leftAdjust,rightAdjust,alph,1.0/f)
 
 
 
