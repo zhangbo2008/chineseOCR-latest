@@ -70,7 +70,9 @@ pushd text/detector/utils && sh make.sh && popd
 debug时候利用evaluate:
 Image.fromarray(img).save('99999999.png') 随时看图片的过程!!!!!!! 相当霸道的方法.
 
+2019-09-14,1点19
 
+解决不了竖直文字的书写识别
 
 
 
