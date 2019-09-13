@@ -239,7 +239,7 @@ def model(img,detectAngle=False,config={},leftAdjust=False,rightAdjust=False,alp
     # text_recs2,scoreAll2,newpic = text_detect2(**config)  ##文字检测
 
     '''
-    无奈,还是找不到处理竖着写文字的方法,只能以后再说,现在先代码回滚/ 
+    无奈,还是找不到处理竖着写文字的方法,只能以后再说,现在先代码回滚/    1
     '''
 
     if 1!=1:
