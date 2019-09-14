@@ -62,7 +62,7 @@ def text_detect(img,
            x3,y3 = (box[6],box[7])
            x4,y4 = (box[4],box[5])
            newBox.append([x1*rx,y1*ry,x2*rx,y2*ry,x3*rx,y3*ry,x4*rx,y4*ry])
-    return newBox 
+    return newBox ,scores
 
 
 
@@ -112,7 +112,11 @@ def model(img,detectAngle=False,config={},leftAdjust=False,rightAdjust=False,alp
     @@param:ifadjustDegree 调整文字识别倾斜角度
     @@param:detectAngle,是否检测文字朝向
     """
+
     angle,img = eval_angle(img,detectAngle=detectAngle)##文字方向检测
+
+
+
     if opencvFlag!='keras':
        img,f =letterbox_image(Image.fromarray(img), IMGSIZE)## pad
        img = np.array(img)
@@ -120,10 +124,10 @@ def model(img,detectAngle=False,config={},leftAdjust=False,rightAdjust=False,alp
         f=1.0##解决box在原图坐标不一致问题
     
     config['img'] = img
-    text_recs = text_detect(**config)##文字检测
+    text_recs,scores = text_detect(**config)##文字检测
     newBox = sort_box(text_recs)  #按照列高排序,符合我们阅读顺序!     ##下行行文本识别
     result = crnnRec(np.array(img),newBox,leftAdjust,rightAdjust,alph,1.0/f)
-    return img,result,angle
+    return img,result,angle,scores
 
 
 

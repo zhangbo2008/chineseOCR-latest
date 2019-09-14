@@ -102,9 +102,10 @@ def main(url):
     p = os.path.dirname(os.path.abspath( __file__ ))+'/tmp.jpg'
     img = cv2.imread(p)
 
+
     h,w = img.shape[:2]
     timeTake = time.time()
-    _,result,angle= model.model(img,
+    _,result1,angle1,scores1= model.model(img,
                                         detectAngle=True,##是否进行文字方向检测
                                         config=dict(MAX_HORIZONTAL_GAP=50,##字符之间的最大间隔，用于文本行的合并
                                         MIN_V_OVERLAPS=0.6,
@@ -120,17 +121,36 @@ def main(url):
 
                                        )
 
-    timeTake = time.time()-timeTake
+    _, result2, angle2, scores2 = model.model(cv2.imread(p),
+                                           detectAngle=False,  ##是否进行文字方向检测
+                                           config=dict(MAX_HORIZONTAL_GAP=50,  ##字符之间的最大间隔，用于文本行的合并
+                                                       MIN_V_OVERLAPS=0.6,
+                                                       MIN_SIZE_SIM=0.6,
+                                                       TEXT_PROPOSALS_MIN_SCORE=0.1,
+                                                       TEXT_PROPOSALS_NMS_THRESH=0.3,
+                                                       TEXT_LINE_NMS_THRESH=0.7,  ##文本行之间测iou值
 
-    print('It take:{}s'.format(timeTake))
-    for line in result:
-        print(line['text'])
-    plot_boxes(img,angle, result,color=(0,0,0))
-    out={}
+                                                       ),
+                                           leftAdjust=True,  ##对检测的文本行进行向左延伸
+                                           rightAdjust=True,  ##对检测的文本行进行向右延伸
+                                           alph=0.01,  ##对检测的文本行进行向右、左延伸的倍数
 
-    out['picName']=picName
-    out['parser']=result
-    return out
+                                           )
+    if scores1.sum()>scores2.sum():
+
+        out={}
+
+        out['picName']=picName
+        out['parser']=result1
+        out['angle']=angle1
+        return out
+    else:
+        out={}
+
+        out['picName']=picName
+        out['parser']=result2
+        out['angle2']=angle2
+        return out
 
 
     # In[ ]:
