@@ -45,7 +45,8 @@ def text_detect(img,
     scores = np.array(scores,dtype=np.float32)
     textdetector  = TextDetector(MAX_HORIZONTAL_GAP,MIN_V_OVERLAPS,MIN_SIZE_SIM)#crnn识别汉子,这里面是算法核心,最难的地方.跟yolo一起就是全部了.
     shape = img.shape[:2]
-    #看看下行boxes 的含义.  scores:表示最后抽取的汉字对应的score?????????
+    #看看下行boxes 的含义.  scores:表示最后抽取的汉字对应的score?????????对的,下行的scores就是最后每行的
+    #分数了!!!!!!!!!!!!!1 非常重要的参数.
     boxes,scores = textdetector.detect(boxes,
                                 scores[:, np.newaxis],
                                 shape,
