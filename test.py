@@ -35,6 +35,7 @@ def main(url):
     :return:
     '''
     tmp2=url
+    print(url,"url...........")
     import requests
     r = requests.get(tmp2)
     with open('tmp.jpg', 'wb') as f:
@@ -105,7 +106,7 @@ def main(url):
 
     h,w = img.shape[:2]
     timeTake = time.time()
-    _,result1,angle1,scores1= model.model(img,
+    _,result1,angle1,scores1,_,_= model.model(img,
                                         detectAngle=True,##是否进行文字方向检测
                                         config=dict(MAX_HORIZONTAL_GAP=50,##字符之间的最大间隔，用于文本行的合并
                                         MIN_V_OVERLAPS=0.6,
@@ -121,7 +122,7 @@ def main(url):
 
                                        )
 
-    _, result2, angle2, scores2 = model.model(cv2.imread(p),
+    _, result2, angle2, scores2,_,_ = model.model(cv2.imread(p),
                                            detectAngle=False,  ##是否进行文字方向检测
                                            config=dict(MAX_HORIZONTAL_GAP=50,  ##字符之间的最大间隔，用于文本行的合并
                                                        MIN_V_OVERLAPS=0.6,
@@ -150,6 +151,7 @@ def main(url):
         out['picName']=picName
         out['parser']=result2
         out['angle2']=angle2
+
         return out
 
 

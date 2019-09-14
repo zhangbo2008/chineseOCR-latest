@@ -39,12 +39,14 @@ def text_detect(img,
                 TEXT_PROPOSALS_NMS_THRESH=0.3,
                 TEXT_LINE_NMS_THRESH = 0.3,
                 ):
+    Image.fromarray(img).save("look.png")#看看boxes,scores的含义 是所有rpn的结果.
     boxes, scores = detect.text_detect(np.array(img))
     boxes = np.array(boxes,dtype=np.float32)
     scores = np.array(scores,dtype=np.float32)
     textdetector  = TextDetector(MAX_HORIZONTAL_GAP,MIN_V_OVERLAPS,MIN_SIZE_SIM)#crnn识别汉子,这里面是算法核心,最难的地方.跟yolo一起就是全部了.
     shape = img.shape[:2]
-    boxes = textdetector.detect(boxes,
+    #看看下行boxes 的含义.  scores:表示最后抽取的汉字对应的score?????????
+    boxes,scores = textdetector.detect(boxes,
                                 scores[:, np.newaxis],
                                 shape,
                                 TEXT_PROPOSALS_MIN_SCORE,
@@ -53,6 +55,8 @@ def text_detect(img,
                                 )
     
     text_recs = get_boxes(boxes)
+
+    print(text_recs.shape,"text_recs.shape")
     newBox = []
     rx = 1
     ry = 1
@@ -62,6 +66,7 @@ def text_detect(img,
            x3,y3 = (box[6],box[7])
            x4,y4 = (box[4],box[5])
            newBox.append([x1*rx,y1*ry,x2*rx,y2*ry,x3*rx,y3*ry,x4*rx,y4*ry])
+
     return newBox ,scores
 
 
@@ -112,7 +117,7 @@ def model(img,detectAngle=False,config={},leftAdjust=False,rightAdjust=False,alp
     @@param:ifadjustDegree 调整文字识别倾斜角度
     @@param:detectAngle,是否检测文字朝向
     """
-
+    print(22222222222)
     angle,img = eval_angle(img,detectAngle=detectAngle)##文字方向检测
 
 
@@ -126,8 +131,9 @@ def model(img,detectAngle=False,config={},leftAdjust=False,rightAdjust=False,alp
     config['img'] = img
     text_recs,scores = text_detect(**config)##文字检测
     newBox = sort_box(text_recs)  #按照列高排序,符合我们阅读顺序!     ##下行行文本识别
+    print(newBox)
     result = crnnRec(np.array(img),newBox,leftAdjust,rightAdjust,alph,1.0/f)
-    return img,result,angle,scores
+    return img,result,angle,scores,text_recs,newBox
 
 
 

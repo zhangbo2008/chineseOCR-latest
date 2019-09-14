@@ -57,7 +57,7 @@ class TextProposalConnector:
             text_lines[index, 1]=min(lt_y, rt_y) #为了鲁棒性,取2个直线的最大暴裸
             text_lines[index, 2]=x1
             text_lines[index, 3]=max(lb_y, rb_y)
-            text_lines[index, 4]=score
+            text_lines[index, 4]=score        #把分数放在这里了!!!!!!!!!!!!!!!!11
             text_lines[index, 5]=z1[0]#记录直线的斜率和bias
             text_lines[index, 6]=z1[1]
             height = np.mean( (text_line_boxes[:,3]-text_line_boxes[:,1]) )#平均字高
