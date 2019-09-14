@@ -129,6 +129,7 @@ def main(url):
 
     out['picName']=picName
     out['parser']=result
+    out['angle']=angle         #这个角度表示逆时针.
     return out
 
 

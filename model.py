@@ -222,6 +222,7 @@ def model(img,detectAngle=False,config={},leftAdjust=False,rightAdjust=False,alp
     @@param:detectAngle,是否检测文字朝向
     """
     angle,img = eval_angle(img,detectAngle=detectAngle)##文字方向检测# 注意cv读取就是行列反过来.
+
     if opencvFlag!='keras':
        img,f =letterbox_image(Image.fromarray(img), IMGSIZE)## pad
        img = np.array(img)
