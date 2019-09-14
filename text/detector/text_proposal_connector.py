@@ -28,7 +28,7 @@ class TextProposalConnector:
         # tp=text proposal
         #下面一行很核心!!!!!!!!!!!!   im_size: 原始大图片的长和宽
         tp_groups=self.group_text_proposals(text_proposals, scores, im_size)##find the text line 
-        #下面对结果拼接seq,seq长度设置8
+        #下面对结果拼接box参数设置8
         text_lines=np.zeros((len(tp_groups), 8), np.float32)
 
         for index, tp_indices in enumerate(tp_groups):

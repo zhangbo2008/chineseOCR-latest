@@ -5,7 +5,7 @@ import os,sys
 print(os.path.dirname(os.path.dirname( os.path.dirname(os.path.abspath( __file__ )) )))
 sys.path.append(   os.path.dirname(os.path.abspath( __file__ ))            )
 sys.path.append(   os.path.dirname(os.path.dirname( os.path.dirname(os.path.abspath( __file__ )) ))   )
-import test
+import test#利用import加载模型参数.
 # Create your views here.
 class PolicyExtractorService(View):
     '''

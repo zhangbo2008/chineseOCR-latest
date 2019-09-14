@@ -245,7 +245,7 @@ def letterbox_image(image, size,fillValue=[128,128,128]):
     
     resized_image = image.resize((new_w,new_h), Image.BICUBIC)
     if fillValue is None:
-       fillValue = [int(x.mean()) for x in cv2.split(np.array(im))]
+       fillValue = [int(x.mean()) for x in cv2.split(np.array(image))]
     boxed_image = Image.new('RGB', size, tuple(fillValue))
     
     boxed_image.paste(resized_image,)
@@ -297,7 +297,13 @@ def get_box_spilt(boxes,im,sizeW,SizeH,splitW=8,isRoate=False,rorateDegree=0):
     newBoxes = [box+[1] for box in newBoxes]
     return newBoxes,newIm
 
-
+def rotate_boxshunshi90(box):
+    h=box[3]-box[1]
+    w=box[2]-box[0]
+    center=(box[0]+box[2])/2,(box[1]+box[3])/2
+    zuoshang=center[0]-h/2,center[1]-w/2
+    youxia=center[0]+h/2,center[1]+w/2
+    return zuoshang,youxia
 
 def box_rotate(box,angle=0,imgH=0,imgW=0):
     """
@@ -410,7 +416,7 @@ def letterbox_image(image, size,fillValue=[128,128,128]):
     
     resized_image = image.resize((new_w,new_h), Image.BICUBIC)
     if fillValue is None:
-       fillValue = [int(x.mean()) for x in cv2.split(np.array(im))]
+       fillValue = [int(x.mean()) for x in cv2.split(np.array(image))]
     boxed_image = Image.new('RGB', size, tuple(fillValue))
     boxed_image.paste(resized_image, (0,0))
     return boxed_image,new_w/image_w
