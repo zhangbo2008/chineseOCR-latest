@@ -33,15 +33,38 @@ if 'flag'  not in   locals():
 #下面是函数主体.
 
 ##
-
+#发现目前还是文字框,沙没法识别出来,当2行比较近时候就不行!!!!!!!!!!!!!!!!!!!!!!
 
 import time
 from PIL import Image
 import os,sys
 p = 'tmp.png'
 img = cv2.imread(p)
-
-
+def depoint(img):   #input: gray image  #去燥方案.
+    pixdata = img
+    pixdata =  cv2.cvtColor(pixdata, cv2.COLOR_BGR2GRAY)  # 保证不改变代码其他位置
+    print(pixdata.shape)
+    w,h = pixdata.shape
+    for y in range(1,h-1):
+        for x in range(1,w-1): #锐化,去除边缘的像素,边缘的像素周围会有接近于0的点.
+            count = 0
+            if pixdata[x,y-1] > 245:
+                count = count + 1
+            if pixdata[x,y+1] > 245:
+                count = count + 1
+            if pixdata[x-1,y] > 245:
+                count = count + 1
+            if pixdata[x+1,y] > 245:
+                count = count + 1
+            if count > 2:
+                pixdata[x,y] = 255
+    pixdata = src_RGB = cv2.cvtColor(pixdata, cv2.COLOR_GRAY2BGR)  # 保证不改变代码其他位置
+    pixdata = cv2.fastNlMeansDenoisingColored(pixdata, None, 10, 10, 7, 21)
+    cv2.imwrite('11111.png',pixdata)
+    print(pixdata.shape)
+    return pixdata
+img=depoint(img)
+TEXT_LINE_NMS_THRESH=0.8
 h,w = img.shape[:2]
 timeTake = time.time()
 print(111111111111)
@@ -53,7 +76,7 @@ _,result1,angle1,scores1,tex_rec,newBox= model.model(img,
                                     MIN_SIZE_SIM=0.6,
                                     TEXT_PROPOSALS_MIN_SCORE=0.1,
                                     TEXT_PROPOSALS_NMS_THRESH=0.3,
-                                    TEXT_LINE_NMS_THRESH = 0.7,##文本行之间测iou值
+                                    TEXT_LINE_NMS_THRESH = TEXT_LINE_NMS_THRESH,##文本行之间测iou值
 
                 ),
                                     leftAdjust=True,##对检测的文本行进行向左延伸
@@ -70,8 +93,10 @@ _, result2, angle2, scores2,tex_rec,newBox2 = model.model(cv2.imread(p)   ,
                                                    MIN_SIZE_SIM=0.6,
                                                    TEXT_PROPOSALS_MIN_SCORE=0.1,
                                                    TEXT_PROPOSALS_NMS_THRESH=0.3,
-                                                   TEXT_LINE_NMS_THRESH=0.7,  ##文本行之间测iou值
+                                                   TEXT_LINE_NMS_THRESH=TEXT_LINE_NMS_THRESH,  ##文本行之间测iou值
                                                    #需要修改上面这个参数,来让行识别率提升.
+                                                   #参数越大,iou大于阈值的才会扔掉.
+                                                   #所以越大结果越多.
 
                                                    ),
                                        leftAdjust=True,  ##对检测的文本行进行向左延伸
@@ -129,4 +154,38 @@ cv2.imwrite('11111.png',im)
 
 
 ##
+
+#下面测试图像预处理方法:
+
+
+def depoint():   #input: gray image  #去燥方案.
+    pixdata = cv2.imread('tmp.png',flags=0)
+    print(pixdata.shape)
+    w,h = pixdata.shape
+    for y in range(1,h-1):
+        for x in range(1,w-1): #锐化,去除边缘的像素,边缘的像素周围会有接近于0的点.
+            count = 0
+            if pixdata[x,y-1] > 245:
+                count = count + 1
+            if pixdata[x,y+1] > 245:
+                count = count + 1
+            if pixdata[x-1,y] > 245:
+                count = count + 1
+            if pixdata[x+1,y] > 245:
+                count = count + 1
+            if count > 2:
+                pixdata[x,y] = 255
+    pixdata=src_RGB = cv2.cvtColor(pixdata, cv2.COLOR_GRAY2BGR)#保证不改变代码其他位置
+    pixdata = cv2.fastNlMeansDenoisingColored(pixdata, None, 10, 10, 7, 21)
+    cv2.imwrite('11111.png',pixdata)
+    print(pixdata.shape)
+    return pixdata
+
+depoint()
+
+
+#https://www.jianshu.com/p/921c1da740b5
+
+
+
 

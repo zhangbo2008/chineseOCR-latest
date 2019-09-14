@@ -38,7 +38,7 @@ def text_detect(img,
                 TEXT_PROPOSALS_MIN_SCORE=0.7,
                 TEXT_PROPOSALS_NMS_THRESH=0.3,
                 TEXT_LINE_NMS_THRESH = 0.3,
-                ):
+                ):#下面8行检测单个文字
     Image.fromarray(img).save("look.png")#看看boxes,scores的含义 是所有rpn的结果.
     boxes, scores = detect.text_detect(np.array(img))
     boxes = np.array(boxes,dtype=np.float32)
@@ -46,7 +46,7 @@ def text_detect(img,
     textdetector  = TextDetector(MAX_HORIZONTAL_GAP,MIN_V_OVERLAPS,MIN_SIZE_SIM)#crnn识别汉子,这里面是算法核心,最难的地方.跟yolo一起就是全部了.
     shape = img.shape[:2]
     #看看下行boxes 的含义.  scores:表示最后抽取的汉字对应的score?????????对的,下行的scores就是最后每行的
-    #分数了!!!!!!!!!!!!!1 非常重要的参数.
+    #分数了!!!!!!!!!!!!!1 非常重要的参数. #下面几行做文字box拼接成seq
     boxes,scores = textdetector.detect(boxes,
                                 scores[:, np.newaxis],
                                 shape,
@@ -119,6 +119,20 @@ def model(img,detectAngle=False,config={},leftAdjust=False,rightAdjust=False,alp
     @@param:detectAngle,是否检测文字朝向
     """
     print(22222222222)
+    '''
+    这个地方需要加入图片预处理!!!!!!滤波等.
+    
+    确实这个算法没有加入,需要加入!!!!!!!!!!!
+    '''
+
+
+
+
+
+
+
+
+
     angle,img = eval_angle(img,detectAngle=detectAngle)##文字方向检测
 
 
