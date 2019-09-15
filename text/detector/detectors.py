@@ -32,7 +32,8 @@ else:
 print("Nms engine gpu_nms:",gpu_nms,",cython_nms:",cython_nms,",python_nms:",python_nms)
 
 
-def nms(dets, thresh):
+def nms(dets, thresh):#为了debug.改成python_nums,确实发现了使用gpu的nms 有bug!!!!!!!!!!
+    return python_nms(dets, thresh, method='Union')
     if dets.shape[0] == 0:
         return []
     

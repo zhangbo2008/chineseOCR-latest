@@ -61,7 +61,7 @@ if 'flag'  not in   locals():
 import time
 from PIL import Image
 import os,sys
-p = 'tmp5.png' #看这个tmp5图片的区域2019-09-15,14点39,解析是不是对的
+p = 'tmp7.png' #看这个tmp5图片的区域2019-09-15,14点39,解析是不是对的
 
 
 img = cv2.imread(p)
@@ -96,24 +96,24 @@ def depoint(img):   #input: gray image  #去燥方案.
     return pixdata
 img=depoint(img)
 Image.fromarray(img).save("23321321.png")#看看预处理之后的结果.
-TEXT_LINE_NMS_THRESH=0.8
+
 h,w = img.shape[:2]
 timeTake = time.time()
 print(111111111111)
 
+#这些参数很玄学.最好能给出一个自动调节的方案.
 
-
-TEXT_PROPOSALS_MIN_SCORE=0.057
-alph=0.15
-
-
+TEXT_PROPOSALS_MIN_SCORE=0.1
+alph=0.03
+TEXT_LINE_NMS_THRESH=0.1
+MAX_HORIZONTAL_GAP=50
 
 
 
 _,result1,angle1,scores1,tex_rec,newBox,boxForSingle,scoresForSingle,keepIndexForSingle\
     ,tp_groups,Allboxes1= model.model(img,
                                     detectAngle=True,##是否进行文字方向检测
-                                    config=dict(MAX_HORIZONTAL_GAP=50,##字符之间的最大间隔，用于文本行的合并
+                                    config=dict(MAX_HORIZONTAL_GAP=MAX_HORIZONTAL_GAP,##字符之间的最大间隔，用于文本行的合并
                                     MIN_V_OVERLAPS=0.6,
                                     MIN_SIZE_SIM=0.6,
                                     TEXT_PROPOSALS_MIN_SCORE=TEXT_PROPOSALS_MIN_SCORE,
@@ -131,7 +131,7 @@ print(result1)
 _, result2, angle2, scores2,tex_rec,newBox2,boxForSingle2,scoresForSingle2,keepIndexForSingle2\
     ,tp_groups2,Allboxes= model.model(cv2.imread(p)   ,
                                        detectAngle=False,  ##是否进行文字方向检测
-                                       config=dict(MAX_HORIZONTAL_GAP=50,  ##字符之间的最大间隔，用于文本行的合并
+                                       config=dict(MAX_HORIZONTAL_GAP=MAX_HORIZONTAL_GAP,  ##字符之间的最大间隔，用于文本行的合并
                                                    MIN_V_OVERLAPS=0.6,
                                                    MIN_SIZE_SIM=0.6,
                                                    TEXT_PROPOSALS_MIN_SCORE=TEXT_PROPOSALS_MIN_SCORE,

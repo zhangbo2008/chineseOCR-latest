@@ -163,6 +163,9 @@ _, result2, angle2, scores2,tex_rec,newBox2,boxForSingle2,scoresForSingle2,keepI
 7.alph ,汉子行的拓展系数.感觉越高越好.
 
 
+8.注意nms算法,使用python_num版本.gpu版本有bug会算错.应该是c的代码有问题.
+
+
 
 
 
