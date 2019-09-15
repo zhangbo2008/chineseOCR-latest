@@ -34,11 +34,25 @@ if 'flag'  not in   locals():
 
 ##
 #发现目前还是文字框,沙没法识别出来,当2行比较近时候就不行!!!!!!!!!!!!!!!!!!!!!!
+'''
 
+
+        沙
+        我
+
+
+
+'''
+
+#2019-09-15,11点39开始继续搞识别.
+#讨论的,沙竖着写识别不出来.为什么? 发现沙字下面写什么字,多会导致沙没法识别.
+
+#发现观察图片时候需要一个按照像素移动鼠标的功能.  这个好像是nms算法的缺陷.
+#https://www.cnblogs.com/zf-blog/p/8532228.html
 import time
 from PIL import Image
 import os,sys
-p = 'tmp.png'
+p = '888.png'
 img = cv2.imread(p)
 def depoint(img):   #input: gray image  #去燥方案.
     pixdata = img
@@ -69,7 +83,7 @@ h,w = img.shape[:2]
 timeTake = time.time()
 print(111111111111)
 #这个scores1,socres2. 直接sum效果不好.因为很多差的边框会扰乱结果.所以需要先nms再算score
-_,result1,angle1,scores1,tex_rec,newBox= model.model(img,
+_,result1,angle1,scores1,tex_rec,newBox,boxForSingle,scoresForSingle= model.model(img,
                                     detectAngle=True,##是否进行文字方向检测
                                     config=dict(MAX_HORIZONTAL_GAP=50,##字符之间的最大间隔，用于文本行的合并
                                     MIN_V_OVERLAPS=0.6,
@@ -86,7 +100,7 @@ _,result1,angle1,scores1,tex_rec,newBox= model.model(img,
                                    )
 print(result1)
 
-_, result2, angle2, scores2,tex_rec,newBox2 = model.model(cv2.imread(p)   ,
+_, result2, angle2, scores2,tex_rec,newBox2,boxForSingle,scoresForSingle = model.model(cv2.imread(p)   ,
                                        detectAngle=False,  ##是否进行文字方向检测
                                        config=dict(MAX_HORIZONTAL_GAP=50,  ##字符之间的最大间隔，用于文本行的合并
                                                    MIN_V_OVERLAPS=0.6,
@@ -131,9 +145,16 @@ out['angle2']=angle2
 
 
 的
+
+
+
+
 沙
+
+
 发
 斯
+
 蒂
 芬
 
@@ -187,5 +208,4 @@ depoint()
 #https://www.jianshu.com/p/921c1da740b5
 
 
-
-
+##

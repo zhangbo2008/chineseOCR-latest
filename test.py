@@ -106,7 +106,7 @@ def main(url):
 
     h,w = img.shape[:2]
     timeTake = time.time()
-    _,result1,angle1,scores1,_,_= model.model(img,
+    _,result1,angle1,scores1,_,_,_= model.model(img,
                                         detectAngle=True,##是否进行文字方向检测
                                         config=dict(MAX_HORIZONTAL_GAP=50,##字符之间的最大间隔，用于文本行的合并
                                         MIN_V_OVERLAPS=0.6,
@@ -122,7 +122,7 @@ def main(url):
 
                                        )
 
-    _, result2, angle2, scores2,_,_ = model.model(cv2.imread(p),
+    _, result2, angle2, scores2,_,_ ,_= model.model(cv2.imread(p),
                                            detectAngle=False,  ##是否进行文字方向检测
                                            config=dict(MAX_HORIZONTAL_GAP=50,  ##字符之间的最大间隔，用于文本行的合并
                                                        MIN_V_OVERLAPS=0.6,

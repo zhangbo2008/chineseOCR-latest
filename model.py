@@ -39,12 +39,34 @@ def text_detect(img,
                 TEXT_PROPOSALS_NMS_THRESH=0.3,
                 TEXT_LINE_NMS_THRESH = 0.3,
                 ):#下面8行检测单个文字
+
+    #下面几行是用yolo给出框.
     Image.fromarray(img).save("look.png")#看看boxes,scores的含义 是所有rpn的结果.
-    boxes, scores = detect.text_detect(np.array(img))
+    boxes, scores = detect.text_detect(np.array(img))  #这里面用的是yolo
     boxes = np.array(boxes,dtype=np.float32)
     scores = np.array(scores,dtype=np.float32)
-    textdetector  = TextDetector(MAX_HORIZONTAL_GAP,MIN_V_OVERLAPS,MIN_SIZE_SIM)#crnn识别汉子,这里面是算法核心,最难的地方.跟yolo一起就是全部了.
+    boxesForSingle=boxes#表示单个文字的框结果.
+    scoresForSingle=scores#表示单个文字的框结果.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#函数下面部分是做行拼接.
+    textdetector  = TextDetector(MAX_HORIZONTAL_GAP,MIN_V_OVERLAPS,MIN_SIZE_SIM)
+
     shape = img.shape[:2]
+
     #看看下行boxes 的含义.  scores:表示最后抽取的汉字对应的score?????????对的,下行的scores就是最后每行的
     #分数了!!!!!!!!!!!!!1 非常重要的参数. #下面几行做文字box拼接成seq
     boxes,scores = textdetector.detect(boxes,
@@ -68,7 +90,7 @@ def text_detect(img,
            x4,y4 = (box[4],box[5])
            newBox.append([x1*rx,y1*ry,x2*rx,y2*ry,x3*rx,y3*ry,x4*rx,y4*ry])
 
-    return newBox ,scores
+    return newBox ,scores,boxesForSingle,scoresForSingle
 
 
 
@@ -144,11 +166,11 @@ def model(img,detectAngle=False,config={},leftAdjust=False,rightAdjust=False,alp
         f=1.0##解决box在原图坐标不一致问题
     
     config['img'] = img
-    text_recs,scores = text_detect(**config)##文字检测
+    text_recs,scores,boxForSingle,scoresForSingle = text_detect(**config)##文字检测
     newBox = sort_box(text_recs)  #按照列高排序,符合我们阅读顺序!     ##下行行文本识别
     print(newBox)
     result = crnnRec(np.array(img),newBox,leftAdjust,rightAdjust,alph,1.0/f)
-    return img,result,angle,scores,text_recs,newBox
+    return img,result,angle,scores,text_recs,newBox,boxForSingle,scoresForSingle
 
 
 
