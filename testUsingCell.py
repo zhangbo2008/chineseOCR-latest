@@ -61,12 +61,12 @@ if 'flag'  not in   locals():
 import time
 from PIL import Image
 import os,sys
-p = 'tmp5.png' #看这个tmp5图片的区域2019-09-15,14点39,解析是不是对的
+p = '2.jpeg' #看这个tmp5图片的区域2019-09-15,14点39,解析是不是对的
 
 
 img = cv2.imread(p)
 
-
+#2019-09-15,20点38下面进行2值化,看会不会变好.担心如果环境色跟文字一样会不会有bug.
 
 
 
@@ -89,10 +89,17 @@ def depoint(img):   #input: gray image  #去燥方案.
                 count = count + 1
             if count > 2:
                 pixdata[x,y] = 255
+    #高斯2值化.
+    pixdata = cv2.adaptiveThreshold(pixdata, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, \
+                                cv2.THRESH_BINARY, 3, 5)
+    #高斯滤波
+    pixdata = cv2.bilateralFilter(pixdata, 40, 75, 75)
+
     pixdata = src_RGB = cv2.cvtColor(pixdata, cv2.COLOR_GRAY2BGR)  # 保证不改变代码其他位置
     pixdata = cv2.fastNlMeansDenoisingColored(pixdata, None, 10, 10, 7, 21)
     cv2.imwrite('11111.png',pixdata)
     print(pixdata.shape)
+
     return pixdata
 img=depoint(img)
 Image.fromarray(img).save("23321321.png")#看看预处理之后的结果.
@@ -163,14 +170,9 @@ print(result2)
 #         # plot_boxes1(img, boxForSingle2[tp_groups2[0]])
 #         plot_boxes1(img, boxForSingle2)
 Image.fromarray(img).save("画框之前的图片.png")#看看预处理之后的结果.
-plot_boxes1(img, boxForSingle2[tp_groups2[3]])
+
 #用下面的结果研究一下汉子的得分问题!
-print(Allscores2[tp_groups2[0]])
-print(Allscores2[tp_groups2[1]])
-print(Allscores2[tp_groups2[2]])
-print(Allscores2[tp_groups2[3]])
-print(Allscores2[tp_groups2[4]])
-print(Allscores2[tp_groups2[5]])
+
 # plot_boxes1(img, Allboxes[8:12]) #批量画框
 # plot_boxes1(img, Allboxes)#从这行代码看出来其实yolo找到了汉子的框.只是没识别出来.
 

@@ -183,7 +183,13 @@ _, result2, angle2, scores2,tex_rec,newBox2,boxForSingle2,scoresForSingle2,keepI
 和对于darnet继续的训练.发现关于一些左右结构的字score 值给的偏低.
 
 
+2019-09-15,20点19
+运行跑testUsingCell.py即可.里面使用了pycharm 的cell功能非常实用1!!!!!!!!!!!!!!
 
+
+2019-09-15,20点22
+
+新问题:对于繁体中文不支持!
 
 
 
