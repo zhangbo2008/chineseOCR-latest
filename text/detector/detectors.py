@@ -149,7 +149,7 @@ class TextDetector:
             text_lines = text_lines[keep_inds]
             scoreFinal=text_lines[:,4]
 
-            return text_lines,scoreFinal,keep_indsForSingle,tp_groups
+            return text_lines,scoreFinal,keep_indsForSingle,tp_groups,text_proposals,scores
         else:
-            return [],np.array([]),np.array([]),[]
+            return [],np.array([]),np.array([]),[],np.array([]),np.array([])
 

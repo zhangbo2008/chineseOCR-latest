@@ -36,7 +36,7 @@ class TextProposalGraphBuilder:
             results=[]
             for left in range(int(box[0])+1, min(int(box[0])+self.MAX_HORIZONTAL_GAP+1, self.im_size[1])):
                 adj_box_indices=self.boxes_table[left] #阻个像素开始找,从开始x坐标到maxgap+x开始坐标.
-                for adj_box_index in adj_box_indices:
+                for adj_box_index in adj_box_indices: #表示和box变量相连的坐标
                     if self.meet_v_iou(adj_box_index, index):#如果临街box存在.
                         results.append(adj_box_index)
                 if len(results)!=0:
@@ -83,7 +83,7 @@ class TextProposalGraphBuilder:
         self.scores=scores
         self.im_size=im_size
         self.heights=text_proposals[:, 3]-text_proposals[:, 1]+1 #每一个box的高度
-        boxes_table=[[] for _ in range(self.im_size[1])]
+        boxes_table=[[] for _ in range(self.im_size[1])] #im_size=(h,w) boxes_table[i] 表示像素第i行相交的矩阵index表
         for index, box in enumerate(text_proposals):
             #print(int(box[0]),len(boxes_table))
             boxes_table[int(box[0])].append(index) #把数据扔到boxes_table里面.用第0个坐标(也就是左下角)来表示这个box
