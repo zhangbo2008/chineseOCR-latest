@@ -180,6 +180,7 @@ _, result2, angle2, scores2,tex_rec,newBox2,boxForSingle2,scoresForSingle2,keepI
 
 
 预处理函数.
+和对于darnet继续的训练.发现关于一些左右结构的字score 值给的偏低.
 
 
 
