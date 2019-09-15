@@ -49,6 +49,7 @@ def text_detect(img,
     scores = np.array(scores,dtype=np.float32)
 
     Allboxes=boxes
+    AllScores=scores
 
 
 
@@ -94,7 +95,7 @@ def text_detect(img,
            x4,y4 = (box[4],box[5])
            newBox.append([x1*rx,y1*ry,x2*rx,y2*ry,x3*rx,y3*ry,x4*rx,y4*ry])
 
-    return newBox ,scores,boxesForSingle,scoresForSingle,keepIndForSingle,tp_groups,Allboxes
+    return newBox ,scores,boxesForSingle,scoresForSingle,keepIndForSingle,tp_groups,Allboxes,AllScores
 
 
 
@@ -170,11 +171,11 @@ def model(img,detectAngle=False,config={},leftAdjust=False,rightAdjust=False,alp
         f=1.0##解决box在原图坐标不一致问题
     
     config['img'] = img
-    text_recs, scores, boxForSingleAfterNMS, scoresForSingle, keepIndForSingle, tp_groups,Allboxes = text_detect(**config)##文字检测
+    text_recs, scores, boxForSingleAfterNMS, scoresForSingle, keepIndForSingle, tp_groups,Allboxes,Allscores = text_detect(**config)##文字检测
     newBox = sort_box(text_recs)  #按照列高排序,符合我们阅读顺序!     ##下行行文本识别
     print(newBox)
     result = crnnRec(np.array(img),newBox,leftAdjust,rightAdjust,alph,1.0/f)
-    return img, result, angle, scores, text_recs, newBox, boxForSingleAfterNMS, scoresForSingle, keepIndForSingle, tp_groups,Allboxes
+    return img, result, angle, scores, text_recs, newBox, boxForSingleAfterNMS, scoresForSingle, keepIndForSingle, tp_groups,Allboxes,Allscores
 #keepIndForSingle 表示到底哪个index 对于boxForSingle 中的东西,最后再图片中得到了使用.
 #tp_groups, 每一行行文字取的dex
 

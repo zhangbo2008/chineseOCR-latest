@@ -136,6 +136,7 @@ class TextDetector:
             #下面一行的text_proposals 表示的是框单个文字的框, scores也是单个文字的得分
             text_proposals, scores=text_proposals[keep_inds], scores[keep_inds]
             #当前的scores就是那些小块的分数.
+            scoresBeforeNormalize=scores
             scores=normalize(scores)# 归一化   #
             #下面一行是核心!!!!!!!!!!!,进行文字拼接操作!!!!!!!!!!!!!!!!!!!!!!!!!!! size:图片大小参数
             text_lines,tp_groups = self.text_proposal_connector.get_text_lines(text_proposals, scores, size)##合并文本行
@@ -150,7 +151,7 @@ class TextDetector:
             text_lines = text_lines[keep_inds]
             scoreFinal=text_lines[:,4]
 
-            return text_lines,scoreFinal,keep_indsForSingle,tp_groups,text_proposals,scores
+            return text_lines,scoreFinal,keep_indsForSingle,tp_groups,text_proposals,scoresBeforeNormalize
         else:
             return [],np.array([]),np.array([]),[],np.array([]),np.array([])
 
