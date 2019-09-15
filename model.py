@@ -52,20 +52,6 @@ def text_detect(img,
     AllScores=scores
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #函数下面部分是做行拼接.
     textdetector  = TextDetector(MAX_HORIZONTAL_GAP,MIN_V_OVERLAPS,MIN_SIZE_SIM)
 

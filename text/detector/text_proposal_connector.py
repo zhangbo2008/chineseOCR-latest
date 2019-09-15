@@ -20,19 +20,46 @@ class TextProposalConnector:
         p=np.poly1d(np.polyfit(X, Y, 1))
         return p(x1), p(x2)
 
-    def get_text_lines(self, text_proposals, scores, im_size):#画出新的box
+    def get_text_lines(self, text_proposals, scores, im_size,scoresBeforeNor,yuzhi):#画出新的box
         """
         text_proposals:boxes
         
         """
         # tp=text proposal
+
+
+
+
+
+
+
         #下面一行很核心!!!!!!!!!!!!   im_size: 原始大图片的长和宽
         tp_groups=self.group_text_proposals(text_proposals, scores, im_size)##find the text line 
         #下面对结果拼接box参数设置8
+
+
+
+
+
+
+        '''
+        自定义的赛选策略
+        原理就是汉子边缘的score需求可以放宽
+        '''
+
+
+
+
+        notkeep_inds = []
+        for i in range(len(tp_groups)):
+            if len(tp_groups[i]) > 2:
+                tmp = tp_groups[i][1:-1]
+                if (scoresBeforeNor[tmp] < yuzhi * 1.3).any():
+                    notkeep_inds.append(i)
+        tp_groups = np.delete(np.array(tp_groups), notkeep_inds, axis=0)
+
+
         text_lines=np.zeros((len(tp_groups), 8), np.float32)
-
-
-
 
         #看下面对于tp_groups的处理.
 
@@ -68,6 +95,8 @@ class TextProposalConnector:
             height = np.mean( (text_line_boxes[:,3]-text_line_boxes[:,1]) )#平均字高
             text_lines[index, 7]= height + 2.5#还是为了鲁棒性.
         #text_lines=clip_boxes(text_lines, im_size)
+
+
 
 
         return text_lines,tp_groups

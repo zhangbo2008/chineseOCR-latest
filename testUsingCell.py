@@ -163,7 +163,14 @@ print(result2)
 #         # plot_boxes1(img, boxForSingle2[tp_groups2[0]])
 #         plot_boxes1(img, boxForSingle2)
 Image.fromarray(img).save("画框之前的图片.png")#看看预处理之后的结果.
-plot_boxes1(img, boxForSingle2[tp_groups2[2]])
+plot_boxes1(img, boxForSingle2[tp_groups2[3]])
+#用下面的结果研究一下汉子的得分问题!
+print(Allscores2[tp_groups2[0]])
+print(Allscores2[tp_groups2[1]])
+print(Allscores2[tp_groups2[2]])
+print(Allscores2[tp_groups2[3]])
+print(Allscores2[tp_groups2[4]])
+print(Allscores2[tp_groups2[5]])
 # plot_boxes1(img, Allboxes[8:12]) #批量画框
 # plot_boxes1(img, Allboxes)#从这行代码看出来其实yolo找到了汉子的框.只是没识别出来.
 

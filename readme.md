@@ -166,6 +166,22 @@ _, result2, angle2, scores2,tex_rec,newBox2,boxForSingle2,scoresForSingle2,keepI
 8.注意nms算法,使用python_num版本.gpu版本有bug会算错.应该是c的代码有问题.
 
 
+2019-09-15,20点12
+
+改进了行组合算法.
+因为汉子的边缘应该降低score mask的标准.目前使用的倍率是1.3倍.即
+中央文字的score阈值是边缘阈值的1.3倍
+
+所以现在的TEXT_PROPOSALS_MIN_SCORE 表示边缘的识别汉子阈值.
+
+2019-09-15,20点13
+
+下面还继续改进.
+
+
+预处理函数.
+
+
 
 
 

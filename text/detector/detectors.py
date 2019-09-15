@@ -117,6 +117,8 @@ class TextDetector:
         
         """
         #text_proposals, scores=self.text_proposal_detector.detect(im, cfg.MEAN)
+        text_proposalsOld=text_proposals
+        scoresOld=scores
         keep_inds=np.where(scores>TEXT_PROPOSALS_MIN_SCORE)[0]###阈值赛选,去掉没用的box
         #这个TEXT_PROPOSALS_MIN_SCORE要变小!!!!!!!!!!!!!!!!!!
         text_proposals, scores=text_proposals[keep_inds], scores[keep_inds]
@@ -125,6 +127,31 @@ class TextDetector:
         text_proposals, scores=text_proposals[sorted_indices], scores[sorted_indices]
 
         # nms for text proposals
+
+        '''
+        2019-09-15,18点13
+        
+        今天经过大量的测试.发现这个拼接算法还是有缺陷,因为文字边缘的子图片的score一定会相对小的.所以
+        真正的score判定应该是一个局部的正态分布.越中心的需要得分越高.也就是说有一个平滑过程.
+        需要对这个算法做继续的优化.可以保留前面的算法,再后面进行补充添加.也就是说,让权重设一个小一点的
+        后面进行召回算法.把不符合的去掉
+        
+        
+        
+        
+        '''
+
+
+
+
+
+
+
+
+
+
+
+
         if len(text_proposals)>0:#nms里面需要传2个参数第一个是box+score 第二个是阈值.
 
 
@@ -139,7 +166,7 @@ class TextDetector:
             scoresBeforeNormalize=scores
             scores=normalize(scores)# 归一化   #
             #下面一行是核心!!!!!!!!!!!,进行文字拼接操作!!!!!!!!!!!!!!!!!!!!!!!!!!! size:图片大小参数
-            text_lines,tp_groups = self.text_proposal_connector.get_text_lines(text_proposals, scores, size)##合并文本行
+            text_lines,tp_groups = self.text_proposal_connector.get_text_lines(text_proposals, scores, size,scoresBeforeNormalize,TEXT_PROPOSALS_MIN_SCORE)##合并文本行
 
 
 
@@ -149,9 +176,26 @@ class TextDetector:
 
             keep_inds  = nms(text_lines, TEXT_LINE_NMS_THRESH)##nms
             text_lines = text_lines[keep_inds]
-            scoreFinal=text_lines[:,4]
+
+
+            '''
+            下面开始进入赛选.
+            '''
+
+
+
+
+
+
+
+
+
+
+
+            scoreFinal = text_lines[:, 4]
 
             return text_lines,scoreFinal,keep_indsForSingle,tp_groups,text_proposals,scoresBeforeNormalize
+
         else:
             return [],np.array([]),np.array([]),[],np.array([]),np.array([])
 
