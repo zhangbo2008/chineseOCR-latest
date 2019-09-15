@@ -25,7 +25,49 @@ if 'flag'  not in   locals():
 
 
 
+    def plot_boxes1(img,boxes):
+        blue = (0, 0, 0) #18
+        tmp = np.copy(img)
+        for box in boxes:
+             cv2.rectangle(tmp, (int(box[0]),int(box[1])), (int(box[2]), int(box[3])), blue, 1) #19
+        out=Image.fromarray(tmp).convert('RGB')
+        out.save("保存的图片看box.jpg")
+        return Image.fromarray(tmp)
 
+    def plot_boxes2(img,angle, result,color=(0,0,0)):
+        tmp = np.array(img)
+        c = color
+        h,w = img.shape[:2]
+        thick = int((h + w) / 300)
+        i = 0
+        if angle in [90,270]:
+            imgW,imgH = img.shape[:2]
+
+        else:
+            imgH,imgW= img.shape[:2]
+
+        for line in result:
+            cx =line['cx']
+            cy = line['cy']
+            degree =line['degree']
+            w  = line['w']
+            h = line['h']
+
+            x1,y1,x2,y2,x3,y3,x4,y4 = xy_rotate_box(cx, cy, w, h, degree/180*np.pi)
+
+            x1,y1,x2,y2,x3,y3,x4,y4 = box_rotate([x1,y1,x2,y2,x3,y3,x4,y4],angle=(360-angle)%360,imgH=imgH,imgW=imgW)
+            cx  =np.mean([x1,x2,x3,x4])
+            cy  = np.mean([y1,y2,y3,y4])
+            cv2.line(tmp,(int(x1),int(y1)),(int(x2),int(y2)),c,1)
+            cv2.line(tmp,(int(x2),int(y2)),(int(x3),int(y3)),c,1)
+            cv2.line(tmp,(int(x3),int(y3)),(int(x4),int(y4)),c,1)
+            cv2.line(tmp,(int(x4),int(y4)),(int(x1),int(y1)),c,1)
+            mess=str(i)
+            cv2.putText(tmp, mess, (int(cx), int(cy)),0, 1e-3 * h, c, thick // 2)
+            i+=1
+        out=Image.fromarray(tmp).convert('RGB')
+        out.save("保存的图片.jpg")
+        return out
 
 
 
@@ -52,8 +94,14 @@ if 'flag'  not in   locals():
 import time
 from PIL import Image
 import os,sys
-p = '888.png'
+p = 'tmp4.png'
 img = cv2.imread(p)
+
+
+
+
+
+
 def depoint(img):   #input: gray image  #去燥方案.
     pixdata = img
     pixdata =  cv2.cvtColor(pixdata, cv2.COLOR_BGR2GRAY)  # 保证不改变代码其他位置
@@ -78,12 +126,14 @@ def depoint(img):   #input: gray image  #去燥方案.
     print(pixdata.shape)
     return pixdata
 img=depoint(img)
+Image.fromarray(img).save("23321321.png")#看看预处理之后的结果.
 TEXT_LINE_NMS_THRESH=0.8
 h,w = img.shape[:2]
 timeTake = time.time()
 print(111111111111)
 #这个scores1,socres2. 直接sum效果不好.因为很多差的边框会扰乱结果.所以需要先nms再算score
-_,result1,angle1,scores1,tex_rec,newBox,boxForSingle,scoresForSingle= model.model(img,
+_,result1,angle1,scores1,tex_rec,newBox,boxForSingle,scoresForSingle,keepIndexForSingle\
+    ,tp_groups= model.model(img,
                                     detectAngle=True,##是否进行文字方向检测
                                     config=dict(MAX_HORIZONTAL_GAP=50,##字符之间的最大间隔，用于文本行的合并
                                     MIN_V_OVERLAPS=0.6,
@@ -95,12 +145,13 @@ _,result1,angle1,scores1,tex_rec,newBox,boxForSingle,scoresForSingle= model.mode
                 ),
                                     leftAdjust=True,##对检测的文本行进行向左延伸
                                     rightAdjust=True,##对检测的文本行进行向右延伸
-                                    alph=0.01,##对检测的文本行进行向右、左延伸的倍数
+                                    alph=0.03,##对检测的文本行进行向右、左延伸的倍数
 
                                    )
 print(result1)
 
-_, result2, angle2, scores2,tex_rec,newBox2,boxForSingle,scoresForSingle = model.model(cv2.imread(p)   ,
+_, result2, angle2, scores2,tex_rec,newBox2,boxForSingle2,scoresForSingle2,keepIndexForSingle2\
+    ,tp_groups2= model.model(cv2.imread(p)   ,
                                        detectAngle=False,  ##是否进行文字方向检测
                                        config=dict(MAX_HORIZONTAL_GAP=50,  ##字符之间的最大间隔，用于文本行的合并
                                                    MIN_V_OVERLAPS=0.6,
@@ -115,11 +166,27 @@ _, result2, angle2, scores2,tex_rec,newBox2,boxForSingle,scoresForSingle = model
                                                    ),
                                        leftAdjust=True,  ##对检测的文本行进行向左延伸
                                        rightAdjust=True,  ##对检测的文本行进行向右延伸
-                                       alph=0.01,  ##对检测的文本行进行向右、左延伸的倍数
+                                       alph=0.03,  ##对检测的文本行进行向右、左延伸的倍数
 
                                        )
 
 print(result2)
+
+
+
+
+#画出结果:
+try:
+    plot_boxes1(img, boxForSingle[tp_groups[0]])
+except:
+    plot_boxes1(img, boxForSingle2[tp_groups2[0]])
+
+
+
+
+
+
+
 
 ##
 if scores1.sum()>scores2.sum():

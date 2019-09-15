@@ -31,6 +31,11 @@ class TextProposalConnector:
         #下面对结果拼接box参数设置8
         text_lines=np.zeros((len(tp_groups), 8), np.float32)
 
+
+
+
+        #看下面对于tp_groups的处理.
+
         for index, tp_indices in enumerate(tp_groups):
             text_line_boxes=text_proposals[list(tp_indices)]
             #num = np.size(text_line_boxes)##find 
@@ -40,7 +45,7 @@ class TextProposalConnector:
             z1 = np.polyfit(X,Y,1)        #拟合成一个新的直线.
            # p1 = np.poly1d(z1)
 
-
+#从下行看出来,结果实际上是,上面给的框的min和max做括起来的区域.
             x0=np.min(text_line_boxes[:, 0])
             x1=np.max(text_line_boxes[:, 2])
 
@@ -65,4 +70,4 @@ class TextProposalConnector:
         #text_lines=clip_boxes(text_lines, im_size)
 
 
-        return text_lines
+        return text_lines,tp_groups

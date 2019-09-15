@@ -125,17 +125,31 @@ class TextDetector:
 
         # nms for text proposals
         if len(text_proposals)>0:#nms里面需要传2个参数第一个是box+score 第二个是阈值.
+
+
+
+            #打算把下面一行的nms改成soft-nms
             keep_inds=nms(np.hstack((text_proposals, scores)), TEXT_PROPOSALS_NMS_THRESH)##nms 过滤重复的box 
+            keep_indsForSingle=keep_inds
+
+            #下面一行的text_proposals 表示的是框单个文字的框, scores也是单个文字的得分
             text_proposals, scores=text_proposals[keep_inds], scores[keep_inds]
             #当前的scores就是那些小块的分数.
-            scores=normalize(scores)# 归一化
+            scores=normalize(scores)# 归一化   #
             #下面一行是核心!!!!!!!!!!!,进行文字拼接操作!!!!!!!!!!!!!!!!!!!!!!!!!!! size:图片大小参数
-            text_lines = self.text_proposal_connector.get_text_lines(text_proposals, scores, size)##合并文本行
+            text_lines,tp_groups = self.text_proposal_connector.get_text_lines(text_proposals, scores, size)##合并文本行
+
+
+
+
+
+
+
             keep_inds  = nms(text_lines, TEXT_LINE_NMS_THRESH)##nms
             text_lines = text_lines[keep_inds]
             scoreFinal=text_lines[:,4]
 
-            return text_lines,scoreFinal
+            return text_lines,scoreFinal,keep_indsForSingle,tp_groups
         else:
-            return [],np.array([])
+            return [],np.array([]),np.array([]),[]
 

@@ -3,12 +3,12 @@ from config import opencvFlag,GPU,IMGSIZE,ocrFlag
 if not GPU:
     import os
     os.environ["CUDA_VISIBLE_DEVICES"]=''##不启用GPU
-    
+
 if ocrFlag=='torch':
     from crnn.crnn_torch import crnnOcr as crnnOcr ##torch版本ocr
 elif ocrFlag=='keras':
      from crnn.crnn_keras import crnnOcr as crnnOcr ##keras版本OCR
-    
+
 import time
 import cv2
 import numpy as np
@@ -26,10 +26,12 @@ if opencvFlag=='opencv':
 elif opencvFlag=='darknet':
     from text import darknet_detect as detect
 else:
-    ## keras版本文字检测
+    # keras版本文字检测
     from text import keras_detect as detect
 
 print("Text detect engine:{}".format(opencvFlag))
+
+
 
 def text_detect(img,
                 MAX_HORIZONTAL_GAP=30,
@@ -68,8 +70,9 @@ def text_detect(img,
     shape = img.shape[:2]
 
     #看看下行boxes 的含义.  scores:表示最后抽取的汉字对应的score?????????对的,下行的scores就是最后每行的
-    #分数了!!!!!!!!!!!!!1 非常重要的参数. #下面几行做文字box拼接成seq
-    boxes,scores = textdetector.detect(boxes,
+    #分数了!!!!!!!!!!!!!1 非常重要的参数. #下面几行做文字box拼接成seq #tp_groups 表示每一行的文字对应
+    #boxesForSingle 中的index
+    boxes,scores,keepIndForSingle,tp_groups= textdetector.detect(boxes,
                                 scores[:, np.newaxis],
                                 shape,
                                 TEXT_PROPOSALS_MIN_SCORE,
@@ -90,7 +93,7 @@ def text_detect(img,
            x4,y4 = (box[4],box[5])
            newBox.append([x1*rx,y1*ry,x2*rx,y2*ry,x3*rx,y3*ry,x4*rx,y4*ry])
 
-    return newBox ,scores,boxesForSingle,scoresForSingle
+    return newBox ,scores,boxesForSingle,scoresForSingle,keepIndForSingle,tp_groups
 
 
 
@@ -166,11 +169,13 @@ def model(img,detectAngle=False,config={},leftAdjust=False,rightAdjust=False,alp
         f=1.0##解决box在原图坐标不一致问题
     
     config['img'] = img
-    text_recs,scores,boxForSingle,scoresForSingle = text_detect(**config)##文字检测
+    text_recs,scores,boxForSingle,scoresForSingle,keepIndForSingle,tp_groups = text_detect(**config)##文字检测
     newBox = sort_box(text_recs)  #按照列高排序,符合我们阅读顺序!     ##下行行文本识别
     print(newBox)
     result = crnnRec(np.array(img),newBox,leftAdjust,rightAdjust,alph,1.0/f)
-    return img,result,angle,scores,text_recs,newBox,boxForSingle,scoresForSingle
+    return img,result,angle,scores,text_recs,newBox,boxForSingle,scoresForSingle,keepIndForSingle,tp_groups
+#keepIndForSingle 表示到底哪个index 对于boxForSingle 中的东西,最后再图片中得到了使用.
+#tp_groups, 每一行行文字取的dex
 
 
 
