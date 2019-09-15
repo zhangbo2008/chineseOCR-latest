@@ -100,24 +100,33 @@ TEXT_LINE_NMS_THRESH=0.8
 h,w = img.shape[:2]
 timeTake = time.time()
 print(111111111111)
-#这个scores1,socres2. 直接sum效果不好.因为很多差的边框会扰乱结果.所以需要先nms再算score
-# _,result1,angle1,scores1,tex_rec,newBox,boxForSingle,scoresForSingle,keepIndexForSingle\
-#     ,tp_groups= model.model(img,
-#                                     detectAngle=True,##是否进行文字方向检测
-#                                     config=dict(MAX_HORIZONTAL_GAP=50,##字符之间的最大间隔，用于文本行的合并
-#                                     MIN_V_OVERLAPS=0.6,
-#                                     MIN_SIZE_SIM=0.6,
-#                                     TEXT_PROPOSALS_MIN_SCORE=0.1,
-#                                     TEXT_PROPOSALS_NMS_THRESH=0.3,
-#                                     TEXT_LINE_NMS_THRESH = TEXT_LINE_NMS_THRESH,##文本行之间测iou值
-#
-#                 ),
-#                                     leftAdjust=True,##对检测的文本行进行向左延伸
-#                                     rightAdjust=True,##对检测的文本行进行向右延伸
-#                                     alph=0.03,##对检测的文本行进行向右、左延伸的倍数
-#
-#                                    )
-# print(result1)
+
+
+
+TEXT_PROPOSALS_MIN_SCORE=0.057
+alph=0.15
+
+
+
+
+
+_,result1,angle1,scores1,tex_rec,newBox,boxForSingle,scoresForSingle,keepIndexForSingle\
+    ,tp_groups,Allboxes1= model.model(img,
+                                    detectAngle=True,##是否进行文字方向检测
+                                    config=dict(MAX_HORIZONTAL_GAP=50,##字符之间的最大间隔，用于文本行的合并
+                                    MIN_V_OVERLAPS=0.6,
+                                    MIN_SIZE_SIM=0.6,
+                                    TEXT_PROPOSALS_MIN_SCORE=TEXT_PROPOSALS_MIN_SCORE,
+                                    TEXT_PROPOSALS_NMS_THRESH=0.3,
+                                    TEXT_LINE_NMS_THRESH = TEXT_LINE_NMS_THRESH,##文本行之间测iou值
+
+                ),
+                                    leftAdjust=True,##对检测的文本行进行向左延伸
+                                    rightAdjust=True,##对检测的文本行进行向右延伸
+                                    alph=alph,##对检测的文本行进行向右、左延伸的倍数
+
+                                   )
+print(result1)
 
 _, result2, angle2, scores2,tex_rec,newBox2,boxForSingle2,scoresForSingle2,keepIndexForSingle2\
     ,tp_groups2,Allboxes= model.model(cv2.imread(p)   ,
@@ -125,7 +134,7 @@ _, result2, angle2, scores2,tex_rec,newBox2,boxForSingle2,scoresForSingle2,keepI
                                        config=dict(MAX_HORIZONTAL_GAP=50,  ##字符之间的最大间隔，用于文本行的合并
                                                    MIN_V_OVERLAPS=0.6,
                                                    MIN_SIZE_SIM=0.6,
-                                                   TEXT_PROPOSALS_MIN_SCORE=0.1,
+                                                   TEXT_PROPOSALS_MIN_SCORE=TEXT_PROPOSALS_MIN_SCORE,
                                                    TEXT_PROPOSALS_NMS_THRESH=0.3,
                                                    TEXT_LINE_NMS_THRESH=TEXT_LINE_NMS_THRESH,  ##文本行之间测iou值
                                                    #需要修改上面这个参数,来让行识别率提升.
@@ -135,7 +144,7 @@ _, result2, angle2, scores2,tex_rec,newBox2,boxForSingle2,scoresForSingle2,keepI
                                                    ),
                                        leftAdjust=True,  ##对检测的文本行进行向左延伸
                                        rightAdjust=True,  ##对检测的文本行进行向右延伸
-                                       alph=0.03,  ##对检测的文本行进行向右、左延伸的倍数
+                                       alph=alph,  ##对检测的文本行进行向右、左延伸的倍数
 
                                        )
 

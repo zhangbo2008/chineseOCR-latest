@@ -83,7 +83,7 @@ class TextProposalGraphBuilder:
         self.scores=scores
         self.im_size=im_size
         self.heights=text_proposals[:, 3]-text_proposals[:, 1]+1 #每一个box的高度
-        boxes_table=[[] for _ in range(self.im_size[1])] #im_size=(h,w) boxes_table[i] 表示像素第i行相交的矩阵index表
+        boxes_table=[[] for _ in range(self.im_size[1])] #im_size=(h,w) boxes_table[i] 表示像素第i列相交的矩阵index表
         for index, box in enumerate(text_proposals):
             #print(int(box[0]),len(boxes_table))
             boxes_table[int(box[0])].append(index) #把数据扔到boxes_table里面.用第0个坐标(也就是左下角)来表示这个box

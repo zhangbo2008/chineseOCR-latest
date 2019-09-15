@@ -117,7 +117,7 @@ class TextDetector:
         """
         #text_proposals, scores=self.text_proposal_detector.detect(im, cfg.MEAN)
         keep_inds=np.where(scores>TEXT_PROPOSALS_MIN_SCORE)[0]###阈值赛选,去掉没用的box
-        
+        #这个TEXT_PROPOSALS_MIN_SCORE要变小!!!!!!!!!!!!!!!!!!
         text_proposals, scores=text_proposals[keep_inds], scores[keep_inds]
 
         sorted_indices=np.argsort(scores.ravel())[::-1]

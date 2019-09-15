@@ -113,3 +113,59 @@ Image.fromarray(img).save('99999999.png') 随时看图片的过程!!!!!!! 相当
 谁
 
 
+
+
+2019-09-15,16点41
+
+已经知道为什么有的字没法识别了.
+关键就是
+
+
+
+
+_, result2, angle2, scores2,tex_rec,newBox2,boxForSingle2,scoresForSingle2,keepIndexForSingle2\
+    ,tp_groups2,Allboxes= model.model(cv2.imread(p)   ,
+                                       detectAngle=False,  ##是否进行文字方向检测
+                                       config=dict(MAX_HORIZONTAL_GAP=50,  ##字符之间的最大间隔，用于文本行的合并
+                                                   MIN_V_OVERLAPS=0.6,
+                                                   MIN_SIZE_SIM=0.6,
+                                                   TEXT_PROPOSALS_MIN_SCORE=0.05,
+                                                   TEXT_PROPOSALS_NMS_THRESH=0.3,
+                                                   TEXT_LINE_NMS_THRESH=TEXT_LINE_NMS_THRESH,  ##文本行之间测iou值
+                                                   #需要修改上面这个参数,来让行识别率提升.
+                                                   #参数越大,iou大于阈值的才会扔掉.
+                                                   #所以越大结果越多.
+
+                                                   ),
+                                       leftAdjust=True,  ##对检测的文本行进行向左延伸
+                                       rightAdjust=True,  ##对检测的文本行进行向右延伸
+                                       alph=0.03,  ##对检测的文本行进行向右、左延伸的倍数
+
+                                       )
+                                       
+                                       
+这个函数里面的参数.
+下面对里面的参数全部做一个说明
+1.         detectAngle 当图片旋转了90,180,270的时候可以试着开着.虽然开,但是结果依然不准.模型估计有问题.
+所以尽量做2词判断,根据最后得分来选择最好的结果.
+2.         MAX_HORIZONTAL_GAP 这个表示次与此之间最大的间隔,字写的越大,这个就开越大
+3.                   MIN_V_OVERLAPS 这个参数表示只有竖直香蕉比大于这个数才会看做一行.如果书写的上下越不整齐就把这个参数
+改的越小
+
+4.TEXT_PROPOSALS_MIN_SCORE  这个参数最重要.表示汉子识别敏感度,只有大于这个数值的才叫汉子.默认0.1
+但是发现很多字识别不出来.可以根据业务多测试看看
+
+
+5.TEXT_PROPOSALS_NMS_THRESH  :nms算法里面的参数.越大表示nms越宽松.这里面0.3表示2个框香蕉0.3就扔掉得分小的.
+6.TEXT_LINE_NMS_THRESH 文本行之间的nms 跟上面一样. 越低表示越严格!!!!!!!!!!!
+
+
+7.alph ,汉子行的拓展系数.感觉越高越好.
+
+
+
+
+
+
+
+
