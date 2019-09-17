@@ -52,10 +52,37 @@ class TextProposalConnector:
 
         notkeep_inds = []
         for i in range(len(tp_groups)):
+            look=tp_groups[i]
             if len(tp_groups[i]) > 2:
                 tmp = tp_groups[i][1:-1]
-                if (scoresBeforeNor[tmp] < yuzhi * bili).any():
+                '''
+                下面给出#从这里debug发现,如果真真
+                    #要修改好,应该按照一个sin波形来考虑score值的分布情况.
+                    这个逻辑的判断.
+                    
+                    经过看一些书写，字之间的空格一般不超过半个字.
+                    因为有文字空隙,所以前面的阈值要设置觉低才好!一般0.05或者0.04 这个叫边缘阈值.
+                    边缘阈值和中心阈值的比的倒数叫   bili
+                    
+                    
+                '''
+                tmpScore=scoresBeforeNor[tmp]
+                tmpScore=np.sort(tmpScore)[int(len(tmpScore)):]
+                if (tmpScore < yuzhi * bili).any():#从这里debug发现,如果真真
+                    #要修改好,应该按照一个sin波形来考虑score值的分布情况.
+
+
+
+
+
                     notkeep_inds.append(i)
+            else:#这时候只能是一个汉字.被2个框框起来.下面进行判断
+                #因为只有2块,所以如果是汉字,那么他一定是分值高的.即他不在是边缘模块,因为没有中心模块了.所以
+                #直接按照中心阈值来判断这2块.
+                if (scoresBeforeNor[tp_groups[i]]< yuzhi * bili).any():
+                    notkeep_inds.append(i)
+                pass
+
         tp_groups = np.delete(np.array(tp_groups), notkeep_inds, axis=0)
 
 

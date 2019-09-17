@@ -99,11 +99,12 @@ def crnnRec(im,boxes,leftAdjust=False,rightAdjust=False,alph=0.2,f=1.0,tp_groups
 
        detailbox=boxAll[tp_groups[index]]
        detailscore=scoreAll[tp_groups[index]]
+       detaildex=tp_groups[index]
 
 
        if text.strip()!=u'':
             results.append({'cx':cx*f,'cy':cy*f,'text':text,'w':newW*f,'h':newH*f,'degree':degree*180.0/np.pi
-,'detailbox':detailbox,'detailscore':detailscore
+,'detailbox':detailbox,'detailscore':detailscore,'detaildex':detaildex
 
                             })
  #degree表示顺时针转多少度.

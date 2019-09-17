@@ -106,11 +106,11 @@ Image.fromarray(img).save("23321321.png")#看看预处理之后的结果.
 
 h,w = img.shape[:2]
 timeTake = time.time()
-print(111111111111)
+
 
 #这些参数很玄学.最好能给出一个自动调节的方案.
 
-TEXT_PROPOSALS_MIN_SCORE=0.040 #阿西吧,居然要写这么低的参数才行!!
+TEXT_PROPOSALS_MIN_SCORE=0.050 #阿西吧,居然要写这么低的参数才行!!
 alph=0.04
 TEXT_LINE_NMS_THRESH=0.1
 MAX_HORIZONTAL_GAP=50
@@ -155,14 +155,14 @@ _, result2, angle2, scores2,tex_rec,newBox2,boxForSingle2,scoresForSingle2,keepI
 bili=bili
                                        )
 
-print(result2)
+# print(result2)
 alldex=[]
 for i in tp_groups:
     alldex+=i
 plot_boxes1(img, boxForSingle[alldex])
-[print(i)for i in scoresForSingle if i not in alldex]
-print(len(boxForSingle))
-print(len(alldex))
+# [print(i)for i in scoresForSingle if i not in alldex]
+# print(len(boxForSingle))
+# print(len(alldex))
 ##
 alldex=[]
 for i in tp_groups:
