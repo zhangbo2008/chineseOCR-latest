@@ -101,7 +101,7 @@ class TextDetector:
     def detect(self, text_proposals,scores,size,
                TEXT_PROPOSALS_MIN_SCORE=0.7,
                TEXT_PROPOSALS_NMS_THRESH=0.3,
-               TEXT_LINE_NMS_THRESH = 0.3,
+               TEXT_LINE_NMS_THRESH = 0.3,bili=1.2
                
                ):
         """#本函数抽取全部的文字!
@@ -166,7 +166,7 @@ class TextDetector:
             scoresBeforeNormalize=scores
             scores=normalize(scores)# 归一化   #
             #下面一行是核心!!!!!!!!!!!,进行文字拼接操作!!!!!!!!!!!!!!!!!!!!!!!!!!! size:图片大小参数
-            text_lines,tp_groups = self.text_proposal_connector.get_text_lines(text_proposals, scores, size,scoresBeforeNormalize,TEXT_PROPOSALS_MIN_SCORE)##合并文本行
+            text_lines,tp_groups = self.text_proposal_connector.get_text_lines(text_proposals, scores, size,scoresBeforeNormalize,TEXT_PROPOSALS_MIN_SCORE,bili)##合并文本行
 
 
 
@@ -178,9 +178,6 @@ class TextDetector:
             text_lines = text_lines[keep_inds]
 
 
-            '''
-            下面开始进入赛选.
-            '''
 
 
 

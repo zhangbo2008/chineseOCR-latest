@@ -39,7 +39,7 @@ def text_detect(img,
                 MIN_SIZE_SIM=0.6,
                 TEXT_PROPOSALS_MIN_SCORE=0.7,
                 TEXT_PROPOSALS_NMS_THRESH=0.3,
-                TEXT_LINE_NMS_THRESH = 0.3,
+                TEXT_LINE_NMS_THRESH = 0.3,bili=1.2
                 ):#下面8行检测单个文字
 
     #下面几行是用yolo给出框.
@@ -65,7 +65,7 @@ def text_detect(img,
                                 shape,
                                 TEXT_PROPOSALS_MIN_SCORE,
                                 TEXT_PROPOSALS_NMS_THRESH,
-                                TEXT_LINE_NMS_THRESH,
+                                TEXT_LINE_NMS_THRESH,bili
                                 )
     
     text_recs = get_boxes(boxes)
@@ -125,7 +125,7 @@ def eval_angle(im,detectAngle=False):
     return  angle,img
 
 
-def model(img,detectAngle=False,config={},leftAdjust=False,rightAdjust=False,alph=0.2):
+def model(img,detectAngle=False,config={},leftAdjust=False,rightAdjust=False,alph=0.2,bili=1.2):
     """
     @@param:img,
     @@param:ifadjustDegree 调整文字识别倾斜角度
@@ -157,6 +157,7 @@ def model(img,detectAngle=False,config={},leftAdjust=False,rightAdjust=False,alp
         f=1.0##解决box在原图坐标不一致问题
     
     config['img'] = img
+    config['bili'] = bili
     text_recs, scores, boxForSingleAfterNMS, scoresForSingle, keepIndForSingle, tp_groups,Allboxes,Allscores = text_detect(**config)##文字检测
     newBox = sort_box(text_recs)  #按照列高排序,符合我们阅读顺序!     ##下行行文本识别
     print(newBox)

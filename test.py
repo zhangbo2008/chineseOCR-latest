@@ -35,7 +35,7 @@ if 'flag'  not in   locals():
 
 
 
-def main(p):
+def main(url):
 
     #下面是函数主体.
 
@@ -61,8 +61,16 @@ def main(p):
     import os,sys
      #看这个tmp5图片的区域2019-09-15,14点39,解析是不是对的
 
+    tmp2=url
+    print(url,"url...........")
+    import requests
+    r = requests.get(tmp2)
+    with open('tmp.jpg', 'wb') as f:
+        f.write(r.content)
+    print('图片下载完成')
 
-    img = cv2.imread(p)
+    picName=url.split('/')[-1].split('.')[-2]
+    img = cv2.imread('tmp.jpg')
 
     #2019-09-15,20点38下面进行2值化,看会不会变好.担心如果环境色跟文字一样会不会有bug.
 
@@ -99,7 +107,7 @@ def main(p):
         print(pixdata.shape)
 
         return pixdata
-    img=depoint(img)
+    # img=depoint(img)       还是别做预处理了.训练时候带颜色信息的.处理掉了反倒效果不好.
     Image.fromarray(img).save("23321321.png")#看看预处理之后的结果.
 
     h,w = img.shape[:2]
@@ -134,7 +142,7 @@ def main(p):
     print(result1)
 
     _, result2, angle2, scores2,tex_rec,newBox2,boxForSingle2,scoresForSingle2,keepIndexForSingle2\
-        ,tp_groups2,Allboxes,Allscores2= model.model(cv2.imread(p)   ,
+        ,tp_groups2,Allboxes,Allscores2= model.model(img   ,
                                            detectAngle=False,  ##是否进行文字方向检测
                                            config=dict(MAX_HORIZONTAL_GAP=MAX_HORIZONTAL_GAP,  ##字符之间的最大间隔，用于文本行的合并
                                                        MIN_V_OVERLAPS=0.6,
@@ -188,7 +196,7 @@ def main(p):
     if scores1.sum() > scores2.sum():
         out = {}
 
-        out['picName'] = p
+        out['picName'] = picName
         out['parser'] = result1
         out['angle'] = angle1
         return out
@@ -196,7 +204,7 @@ def main(p):
     ##
     out = {}
 
-    out['picName'] = p
+    out['picName'] = picName
     out['parser'] = result2
     out['angle'] = angle2
     return out

@@ -61,7 +61,7 @@ if 'flag'  not in   locals():
 import time
 from PIL import Image
 import os,sys
-p = '2.jpeg' #看这个tmp5图片的区域2019-09-15,14点39,解析是不是对的
+p = 'tmp.jpg' #看这个tmp5图片的区域2019-09-15,14点39,解析是不是对的
 
 
 img = cv2.imread(p)
@@ -101,7 +101,7 @@ def depoint(img):   #input: gray image  #去燥方案.
     print(pixdata.shape)
 
     return pixdata
-img=depoint(img)
+# img=depoint(img) #发现还是预处理做的不对!,不要做预处理!做完预处理学不到了.
 Image.fromarray(img).save("23321321.png")#看看预处理之后的结果.
 
 h,w = img.shape[:2]
@@ -110,11 +110,11 @@ print(111111111111)
 
 #这些参数很玄学.最好能给出一个自动调节的方案.
 
-TEXT_PROPOSALS_MIN_SCORE=0.05
+TEXT_PROPOSALS_MIN_SCORE=0.040 #阿西吧,居然要写这么低的参数才行!!
 alph=0.04
 TEXT_LINE_NMS_THRESH=0.1
 MAX_HORIZONTAL_GAP=50
-
+bili=1.2
 
 
 _,result1,angle1,scores1,tex_rec,newBox,boxForSingle,scoresForSingle,keepIndexForSingle\
@@ -130,13 +130,13 @@ _,result1,angle1,scores1,tex_rec,newBox,boxForSingle,scoresForSingle,keepIndexFo
                 ),
                                     leftAdjust=True,##对检测的文本行进行向左延伸
                                     rightAdjust=True,##对检测的文本行进行向右延伸
-                                    alph=alph,##对检测的文本行进行向右、左延伸的倍数
-
+                                    alph=alph##对检测的文本行进行向右、左延伸的倍数
+,bili=bili
                                    )
 print(result1)
 
 _, result2, angle2, scores2,tex_rec,newBox2,boxForSingle2,scoresForSingle2,keepIndexForSingle2\
-    ,tp_groups2,Allboxes,Allscores2= model.model(cv2.imread(p)   ,
+    ,tp_groups2,Allboxes,Allscores2= model.model(img   ,
                                        detectAngle=False,  ##是否进行文字方向检测
                                        config=dict(MAX_HORIZONTAL_GAP=MAX_HORIZONTAL_GAP,  ##字符之间的最大间隔，用于文本行的合并
                                                    MIN_V_OVERLAPS=0.6,
@@ -152,27 +152,43 @@ _, result2, angle2, scores2,tex_rec,newBox2,boxForSingle2,scoresForSingle2,keepI
                                        leftAdjust=True,  ##对检测的文本行进行向左延伸
                                        rightAdjust=True,  ##对检测的文本行进行向右延伸
                                        alph=alph,  ##对检测的文本行进行向右、左延伸的倍数
-
+bili=bili
                                        )
 
 print(result2)
+alldex=[]
+for i in tp_groups:
+    alldex+=i
+plot_boxes1(img, boxForSingle[alldex])
+[print(i)for i in scoresForSingle if i not in alldex]
+print(len(boxForSingle))
+print(len(alldex))
+##
+alldex=[]
+for i in tp_groups:
+    alldex+=i
+plot_boxes1(img, boxForSingle[alldex])
+print(len(boxForSingle))
+print(len(alldex))
 
 
 
-
-#画出结果:
-# if scores1.sum()>scores2.sum():
-#     try:
-#         plot_boxes1(img, boxForSingle[tp_groups[0]])
-#     # plot_boxes1(img, boxForSingle)
-#     # plot_boxes1(img, [[64,58,66,82]])
-#     except:
-#         # plot_boxes1(img, boxForSingle2[tp_groups2[0]])
-#         plot_boxes1(img, boxForSingle2)
+##
+# 画出结果:
+print(tp_groups)
+if scores1.sum()>=scores2.sum():
+    try:
+        plot_boxes1(img, boxForSingle[tp_groups[2]])
+        print('huatu')
+        plot_boxes1(img, boxForSingle)
+    # plot_boxes1(img, [[64,58,66,82]])
+    except:
+        # plot_boxes1(img, boxForSingle2[tp_groups2[0]])
+        plot_boxes1(img, boxForSingle2)
 Image.fromarray(img).save("画框之前的图片.png")#看看预处理之后的结果.
 
-#用下面的结果研究一下汉子的得分问题!
-
+# 用下面的结果研究一下汉子的得分问题!
+#
 # plot_boxes1(img, Allboxes[8:12]) #批量画框
 # plot_boxes1(img, Allboxes)#从这行代码看出来其实yolo找到了汉子的框.只是没识别出来.
 

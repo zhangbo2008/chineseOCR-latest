@@ -17,5 +17,10 @@ class PolicyExtractorService(View):
         return HttpResponse("GET request from PolicyExtractorService")
 
     def post(self, request):
+
+
+
+
+
         tmp=json.dumps(test.main(request.POST.get('url') ))
         return HttpResponse(tmp)

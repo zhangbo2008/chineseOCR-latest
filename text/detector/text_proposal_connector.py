@@ -20,7 +20,7 @@ class TextProposalConnector:
         p=np.poly1d(np.polyfit(X, Y, 1))
         return p(x1), p(x2)
 
-    def get_text_lines(self, text_proposals, scores, im_size,scoresBeforeNor,yuzhi):#画出新的box
+    def get_text_lines(self, text_proposals, scores, im_size,scoresBeforeNor,yuzhi,bili):#画出新的box
         """
         text_proposals:boxes
         
@@ -31,7 +31,7 @@ class TextProposalConnector:
 
 
 
-
+#text_proposals :676
 
         #下面一行很核心!!!!!!!!!!!!   im_size: 原始大图片的长和宽
         tp_groups=self.group_text_proposals(text_proposals, scores, im_size)##find the text line 
@@ -54,7 +54,7 @@ class TextProposalConnector:
         for i in range(len(tp_groups)):
             if len(tp_groups[i]) > 2:
                 tmp = tp_groups[i][1:-1]
-                if (scoresBeforeNor[tmp] < yuzhi * 1.3).any():
+                if (scoresBeforeNor[tmp] < yuzhi * bili).any():
                     notkeep_inds.append(i)
         tp_groups = np.delete(np.array(tp_groups), notkeep_inds, axis=0)
 
