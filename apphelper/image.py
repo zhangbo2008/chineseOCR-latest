@@ -464,7 +464,7 @@ def estimate_skew_angle(raw):
 
 
 
-def sort_box(box):
+def sort_box(box,tp_groups):
     """
     对box排序,及页面进行排版
         box[index, 0] = x1
@@ -476,9 +476,17 @@ def sort_box(box):
         box[index, 6] = x4
         box[index, 7] = y4
     """
-    
-    box = sorted(box,key=lambda x:sum([x[1],x[3],x[5],x[7]]))
-    return list(box)
+    boxold=box
+    box = sorted(box ,key=lambda x:sum([x[1],x[3],x[5],x[7]]))
+    dex=[]
+    for i in range(len(tp_groups)):
+        dex.append(boxold.index(box[i]))
+    tp_groups=[ tp_groups[i] for i in dex]
+
+
+
+
+    return list(box),tp_groups
 
 
 def get_boxes( bboxes):

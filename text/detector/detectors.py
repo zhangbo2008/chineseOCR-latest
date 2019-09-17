@@ -168,7 +168,7 @@ class TextDetector:
             #下面一行是核心!!!!!!!!!!!,进行文字拼接操作!!!!!!!!!!!!!!!!!!!!!!!!!!! size:图片大小参数
             text_lines,tp_groups = self.text_proposal_connector.get_text_lines(text_proposals, scores, size,scoresBeforeNormalize,TEXT_PROPOSALS_MIN_SCORE,bili)##合并文本行
 
-
+#text_lines是 一行表示成为一个框.
 
 
 
@@ -176,6 +176,7 @@ class TextDetector:
 
             keep_inds  = nms(text_lines, TEXT_LINE_NMS_THRESH)##nms
             text_lines = text_lines[keep_inds]
+            tp_groups=tp_groups[keep_inds]
 
 
 

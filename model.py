@@ -67,7 +67,7 @@ def text_detect(img,
                                 TEXT_PROPOSALS_NMS_THRESH,
                                 TEXT_LINE_NMS_THRESH,bili
                                 )
-    
+    #tp_groups 是boxes对应的 box标号.
     text_recs = get_boxes(boxes)
 
     print(text_recs.shape,"text_recs.shape")
@@ -85,7 +85,7 @@ def text_detect(img,
 
 
 
-def crnnRec(im,boxes,leftAdjust=False,rightAdjust=False,alph=0.2,f=1.0):
+def crnnRec(im,boxes,leftAdjust=False,rightAdjust=False,alph=0.2,f=1.0,tp_groups=None,boxAll=None,scoreAll=None):
    """
    crnn模型，ocr识别
    leftAdjust,rightAdjust 是否左右调整box 边界误差，解决文字漏检
@@ -96,8 +96,16 @@ def crnnRec(im,boxes,leftAdjust=False,rightAdjust=False,alph=0.2,f=1.0):
        degree,w,h,cx,cy = solve(box)
        partImg,newW,newH = rotate_cut_img(im,degree,box,w,h,leftAdjust,rightAdjust,alph)
        text = crnnOcr(partImg.convert('L'))
+
+       detailbox=boxAll[tp_groups[index]]
+       detailscore=scoreAll[tp_groups[index]]
+
+
        if text.strip()!=u'':
-            results.append({'cx':cx*f,'cy':cy*f,'text':text,'w':newW*f,'h':newH*f,'degree':degree*180.0/np.pi})
+            results.append({'cx':cx*f,'cy':cy*f,'text':text,'w':newW*f,'h':newH*f,'degree':degree*180.0/np.pi
+,'detailbox':detailbox,'detailscore':detailscore
+
+                            })
  #degree表示顺时针转多少度.
    return results
 
@@ -159,10 +167,14 @@ def model(img,detectAngle=False,config={},leftAdjust=False,rightAdjust=False,alp
     config['img'] = img
     config['bili'] = bili
     text_recs, scores, boxForSingleAfterNMS, scoresForSingle, keepIndForSingle, tp_groups,Allboxes,Allscores = text_detect(**config)##文字检测
-    newBox = sort_box(text_recs)  #按照列高排序,符合我们阅读顺序!     ##下行行文本识别
+    newBox,tp_groups = sort_box(text_recs,tp_groups)  #按照列高排序,符合我们阅读顺序!     ##下行行文本识别
     print(newBox)
-    result = crnnRec(np.array(img),newBox,leftAdjust,rightAdjust,alph,1.0/f)
+    result = crnnRec(np.array(img),newBox,leftAdjust,rightAdjust,alph,1.0/f,tp_groups,boxForSingleAfterNMS,scoresForSingle)
     return img, result, angle, scores, text_recs, newBox, boxForSingleAfterNMS, scoresForSingle, keepIndForSingle, tp_groups,Allboxes,Allscores
+
+
+
+
 #keepIndForSingle 表示到底哪个index 对于boxForSingle 中的东西,最后再图片中得到了使用.
 #tp_groups, 每一行行文字取的dex
 
